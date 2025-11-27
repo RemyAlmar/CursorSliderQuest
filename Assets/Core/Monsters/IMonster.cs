@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public interface IEnemy
+public interface IEntity
 {
-    void Turn(IPlayer player);
+    public int MaxHealth { get; }
+    public int CurrentHealth { get; }
+    public void TakeDamage(int _damage);
+    void Turn(IEntity _entity);
 }
