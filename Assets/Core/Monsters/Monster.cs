@@ -6,10 +6,19 @@ public class Monster : MonoBehaviour, IEntity
     public int health = 100;
     public int damage = 10;
 
+    public int Health { get => health; }
+    public int Damage { get => damage; }
+
+
     public AudioClip hitSound;
     public AudioClip attackSound;
 
     Coroutine dieRoutine;
+    public void Initialize()
+    {
+        health = 100;
+        damage = 10;
+    }
 
     public void Turn(IEntity player)
     {
