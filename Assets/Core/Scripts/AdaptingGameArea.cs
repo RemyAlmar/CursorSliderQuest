@@ -5,7 +5,6 @@ public class AdaptingGameArea : MonoBehaviour
     private Camera cam;
 
     [SerializeField, Min(0.1f)] private Vector2 gameArea = new(.5f, .5f);
-    [SerializeField] private Transform gameViewArea;
     public int Width => UnityEngine.Device.Screen.width;
     public int Height => UnityEngine.Device.Screen.height;
     public float ScreenRatio => (float)Width / (float)Height;
@@ -14,15 +13,21 @@ public class AdaptingGameArea : MonoBehaviour
     private void Awake()
     {
         cam = GetComponent<Camera>();
+        UpdateRatio();
     }
+
+    void UpdateRatio()
+    {
+        cam.orthographicSize = Mathf.Max(gameArea.x / (2 * ScreenRatio), gameArea.y * .5f);
+    }
+
+#if UNITY_EDITOR
     void OnDrawGizmos()
     {
         if (cam == null)
             cam = GetComponent<Camera>();
 
-        gameViewArea.localScale = gameArea;
-        cam.orthographicSize = Mathf.Max(gameArea.x / (2 * ScreenRatio), gameArea.y * .5f);
-
+        UpdateRatio();
         DrawSquare(Vector2.one * .5f, ConvertWorldUnitToViewport(gameArea), true);
     }
 
@@ -48,4 +53,5 @@ public class AdaptingGameArea : MonoBehaviour
         Gizmos.DrawLine(_bottomRight, _bottomLeft);
         Gizmos.DrawLine(_bottomLeft, _topLeft);
     }
+#endif
 }
