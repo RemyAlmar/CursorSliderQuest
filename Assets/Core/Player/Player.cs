@@ -18,7 +18,8 @@ public class Player : MonoBehaviour, IEntity
     public int direction = 1;
     float cursorSliderMin = 0f;
     float cursorSliderMax = 7f;
-    List<Slot> slots = new();
+    public List<Slot> slots = new();
+    public List<Slot_SO> slotsSO = new();
     public CursorSliderVisual cursorSliderVisual;
     public float turnTimeSecond = 4f;
     public bool isMyTurn = false;
@@ -34,19 +35,68 @@ public class Player : MonoBehaviour, IEntity
         {
             new Action_Slash()
         };
+        InitializeSlots(slotsSO);
+        FillOutRestArray(); // TO SUPP AVEC LA FONCTION
 
-        slots = new List<Slot>()
-        {
-            new Slot(),
-            new Slot(),
-            new Slot(),
-            new Slot(new Action_Slash()),
-            new Slot(),
-            new Slot(),
-            new Slot(),
-        };
+        //slots = new List<Slot>()      // J'AI COMMENTE CA POUR TEST LES LIGNES JUSTE AU DESSUS
+        //{
+        //    new Slot(),
+        //    new Slot(),
+        //    new Slot(),
+        //    new Slot(new Action_Slash()),
+        //    new Slot(),
+        //    new Slot(),
+        //    new Slot(),
+        //};
 
         InitializeSliderVisual();
+    }
+    void FillOutRestArray()    //A SUPPRIMER, ICI JUSTE POUR TESTER ET PAS TOUT NIQUER
+    {
+        if (slots.Count == cursorSliderMax) return;
+        int _toAdd = (int)cursorSliderMax - slots.Count;
+        for (int i = 0; i < _toAdd; i++)
+        {
+            Slot _slot = new()
+            {
+                size = 1,
+                placementIndex = slots.Count
+            };
+            slots.Add(_slot);
+        }
+    }
+
+
+    public void InitializeSlots(List<Slot_SO> _slotsSO)
+    {
+        slots.Clear();
+        foreach (Slot_SO _slotSO in _slotsSO)
+        {
+            Slot_SO _slotData = Instantiate(_slotSO);
+            if ((slots.Count + _slotData.size) > cursorSliderMax) continue;
+
+            int _currentIndex = slots.Count;
+            for (int i = 0; i < _slotData.size; i++)
+            {
+                Slot _slot = new(_slotData, _currentIndex);
+                slots.Add(_slot);
+            }
+        }
+    }
+    public Slot GetNeighboringSlot(int _slotIndex, int _dir = 1)
+    {
+        int _neighborIndex = GetNeighboringSlotIndex(_slotIndex, _dir);
+        return _neighborIndex == -1 ? null : slots[_neighborIndex];
+    }
+    public int GetNeighboringSlotIndex(int _slotIndex, int _dir = 1)
+    {
+        _dir = Math.Sign(_dir);
+        Slot _slot = slots[Mathf.Clamp(0, _slotIndex, (int)cursorSliderMax)];
+
+        int _neighborIndex = _dir > 0 ? _slot.placementIndex + _slot.size : _slot.placementIndex - 1;
+        _neighborIndex = _neighborIndex >= slots.Count || _neighborIndex < 0 ? -1 : _neighborIndex; // Retourne -1 si hors liste
+
+        return _neighborIndex;
     }
 
     private void InitializeSliderVisual()
@@ -98,7 +148,8 @@ public class Player : MonoBehaviour, IEntity
         {
             int slotIndex = Mathf.Clamp((int)currentCursor, 0, slots.Count - 1);
             IAction targetAction = slots[slotIndex].action;
-            if (targetAction.canBeDeactivated)
+            Debug.Log($"Index [{slotIndex}]  ||||||    Voisin Gauche => {GetNeighboringSlotIndex(slotIndex, -1)} || Voisin Droit => {GetNeighboringSlotIndex(slotIndex, 1)}");
+            if (targetAction.CanBeDeactivated)
             {
                 // TODO Visual Feedback for Deactivation and deactivate
             }

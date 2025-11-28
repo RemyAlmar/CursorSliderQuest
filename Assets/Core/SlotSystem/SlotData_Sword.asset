@@ -14,4 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Slot_SO
   idName: Sword
   id: 1529145355
-  Size: 1
+  size: 3
+  action:
+    rid: 2818972540356264001
+  references:
+    version: 2
+    RefIds:
+    - rid: 2818972540356264001
+      type: {class: Action_Slash, ns: , asm: Assembly-CSharp}
+      data:
+        canBeDeactivated: 0
