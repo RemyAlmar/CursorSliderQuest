@@ -19,6 +19,7 @@ public class Player : MonoBehaviour, IEntity
     float cursorSliderMin = 0f;
     float cursorSliderMax = 7f;
     List<Slot> slots = new();
+    public CursorSliderVisual cursorSliderVisual;
 
     public void Initialize()
     {
@@ -41,6 +42,14 @@ public class Player : MonoBehaviour, IEntity
             new Slot(),
             new Slot(),
         };
+
+        InitializeSliderVisual();
+    }
+
+    private void InitializeSliderVisual()
+    {
+        if (cursorSliderVisual != null)
+            cursorSliderVisual.Initialize(slots);
     }
 
     public void TakeDamage(int _damage)
@@ -56,7 +65,7 @@ public class Player : MonoBehaviour, IEntity
     public void Turn(IEntity _entity)
     {
         float t = (currentCursor - cursorSliderMin) / (cursorSliderMax - cursorSliderMin);
-        currentCursor = Mathf.Lerp(cursorSliderMin, cursorSliderMax, t + Time.deltaTime * direction / 4); 
+        currentCursor = Mathf.Lerp(cursorSliderMin, cursorSliderMax, t + Time.deltaTime * direction / 4);
         if (currentCursor >= cursorSliderMax || currentCursor <= cursorSliderMin)
         {
             direction *= -1;
