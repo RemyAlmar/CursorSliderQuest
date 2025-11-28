@@ -1,6 +1,6 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework.Internal;
 using UnityEngine;
 
 public class Player : MonoBehaviour, IEntity
@@ -20,12 +20,15 @@ public class Player : MonoBehaviour, IEntity
     float cursorSliderMax = 7f;
     List<Slot> slots = new();
     public CursorSliderVisual cursorSliderVisual;
+    public float turnTimeSecond = 4f;
+    public bool isMyTurn = false;
 
     public void Initialize()
     {
         health = 100;
         damage = 15;
         doActionButton.player = this;
+        isMyTurn = true;
 
         actions = new IAction[]
         {
@@ -64,38 +67,65 @@ public class Player : MonoBehaviour, IEntity
     // Player Update
     public void Turn(IEntity _entity)
     {
-        float t = (currentCursor - cursorSliderMin) / (cursorSliderMax - cursorSliderMin);
-        currentCursor = Mathf.Lerp(cursorSliderMin, cursorSliderMax, t + Time.deltaTime * direction / 4);
-        if (currentCursor >= cursorSliderMax || currentCursor <= cursorSliderMin)
+        if (isMyTurn)
         {
-            direction *= -1;
+            bool resetSlider = false;
+
+            float t = (currentCursor - cursorSliderMin) / (cursorSliderMax - cursorSliderMin);
+            currentCursor = Mathf.Lerp(cursorSliderMin, cursorSliderMax, t + Time.deltaTime * direction / turnTimeSecond);
+            if (currentCursor >= cursorSliderMax || currentCursor <= cursorSliderMin)
+            {
+                if (direction < 0)
+                {
+                    resetSlider = true;
+                }
+                direction *= -1;
+            }
+
+            if (GameManager.Instance.anyActionRegistered && resetSlider)
+            {
+                EndTurn();
+            }
+
+            // Visual Update
+            cursorSliderVisual.UpdateCursorPosition(currentCursor);
         }
-        cursorSliderVisual.UpdateCursorPosition(currentCursor);
     }
 
     public void DoAction()
     {
-        IAction targetAction = slots[Mathf.Clamp((int)currentCursor, 0, slots.Count - 1)].action;
-        GameManager.Instance.RegisterAction(targetAction);
-        EndTurn();
+        if (GameManager.CanDoAction && isMyTurn)
+        {
+            int slotIndex = Mathf.Clamp((int)currentCursor, 0, slots.Count - 1);
+            IAction targetAction = slots[slotIndex].action;
+            if (targetAction.canBeDeactivated)
+            {
+                // TODO Visual Feedback for Deactivation and deactivate
+            }
+            GameManager.Instance.RegisterAction(targetAction);
+
+            // Visual Feedback
+            cursorSliderVisual.FeedbackAction(slotIndex);
+        }
+    }
+
+    public void StartTurn()
+    {
+        // Visual Feedback
+        cursorSliderVisual.StartTurn(1 / GameManager.Instance.startTurnDelay);
+        StartCoroutine(StartTurnRoutine());
+    }
+
+    IEnumerator StartTurnRoutine()
+    {
+        yield return new WaitForSeconds(GameManager.Instance.startTurnDelay);
+        isMyTurn = true;
     }
 
     private void EndTurn()
     {
+        isMyTurn = false;
+        cursorSliderVisual.EndTurn();
         GameManager.Instance.EndTurn();
-    }
-}
-
-public class Slot
-{
-    public IAction action = null;
-
-    public Slot()
-    {
-        action = new Action_Void();
-    }
-    public Slot(IAction action)
-    {
-        this.action = action;
     }
 }

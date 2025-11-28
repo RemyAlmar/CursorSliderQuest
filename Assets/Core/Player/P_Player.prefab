@@ -52,6 +52,7 @@ MonoBehaviour:
   currentCursor: 0
   direction: 1
   cursorSliderVisual: {fileID: 6350193064248335411}
+  turnTimeSecond: 1
 --- !u!1001 &71075981202781371
 PrefabInstance:
   m_ObjectHideFlags: 0

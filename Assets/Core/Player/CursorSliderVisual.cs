@@ -5,9 +5,13 @@ public class CursorSliderVisual : MonoBehaviour
 {
     [SerializeField] private SlotVisual slotVisualPrefab;
     [SerializeField] private Transform cursorVisualTransform;
+    [SerializeField] private Transform endTurnVisualTransform;
+    private Animator endTurnVisualAnimator;
+    private int endTurnVisual_StartTurnAnimHash = Animator.StringToHash("StartTurn");
+    private int endTurnVisual_AnimationSpeedHash = Animator.StringToHash("AnimationSpeed");
     float xCursorOffset = -0.5f;
     List<SlotVisual> slotVisuals = new();
-    
+
     public void Initialize(List<Slot> slots)
     {
         ClearList();
@@ -32,11 +36,23 @@ public class CursorSliderVisual : MonoBehaviour
             slotVisual.Initialize(targetColor);
             slotVisuals.Add(slotVisual);
         }
+
+        // End Turn Animation Initialization
+        endTurnVisualAnimator = endTurnVisualTransform.GetComponent<Animator>();
+        endTurnVisualAnimator.enabled = false;
     }
 
     public void UpdateCursorPosition(float cursorValue)
     {
         cursorVisualTransform.localPosition = new Vector3(cursorValue + xCursorOffset, 0f, 0f);
+    }
+
+    internal void FeedbackAction(int slotIndex)
+    {
+        if (slotIndex >= 0 && slotIndex < slotVisuals.Count)
+        {
+            slotVisuals[slotIndex].ActivationFeedback();
+        }
     }
 
     private void ClearList()
@@ -46,5 +62,20 @@ public class CursorSliderVisual : MonoBehaviour
             Destroy(slotVisual.gameObject);
         }
         slotVisuals.Clear();
+    }
+
+    public void EndTurn()
+    {
+        endTurnVisualAnimator.enabled = true;
+        endTurnVisualAnimator.Rebind();
+    }
+
+    public void StartTurn(float delay)
+    {
+        if (endTurnVisualAnimator.enabled)
+        {
+            endTurnVisualAnimator.SetFloat(endTurnVisual_AnimationSpeedHash, delay);
+            endTurnVisualAnimator.SetTrigger(endTurnVisual_StartTurnAnimHash);
+        }
     }
 }

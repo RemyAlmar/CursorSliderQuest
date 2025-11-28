@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,6 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private IEntity player;
     [SerializeField] private Player playerPrefab;
     private List<IAction> actions = new List<IAction>();
+    public bool anyActionRegistered => actions.Count > 0;
 
     public List<Monster> enemyPrefabs;
 
@@ -23,6 +25,12 @@ public class GameManager : MonoBehaviour
     private float clickThreshold = 0.3f;
     private float lastClickTime = 0f;
     private bool lastPressedOnUI = false;
+
+    public int turnCountThisFight = 0;
+    public float startTurnDelay = 0.5f;
+
+    // Debug
+    public List<string> debugActionNames = new List<string>();
 
     void Awake()
     {
@@ -53,10 +61,15 @@ public class GameManager : MonoBehaviour
         if (actions == null)
             actions = new List<IAction>();
         actions.Add(_action);
+
+        debugActionNames.Add(_action.GetType().Name);
     }
 
     public void EnemyDefeated(IEntity _enemy)
     {
+        turnCountThisFight = 0;
+        debugActionNames.Clear();
+
         Destroy(((MonoBehaviour)_enemy).gameObject);
         SpawnEnemy();
 
@@ -65,6 +78,19 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
+        StartCoroutine(EndTurnRoutine());
+    }
+
+    IEnumerator EndTurnRoutine()
+    {
+        Debug.Log("---- End of Turn ----");
+        yield return new WaitForSeconds(0.5f);
+        turnCountThisFight++;
+        foreach (string actionName in debugActionNames)
+        {
+            Debug.Log("Executed Action: " + actionName);
+        }
+        debugActionNames.Clear();
         foreach (IAction action in actions)
         {
             action.Execute(player, enemy);
@@ -72,6 +98,9 @@ public class GameManager : MonoBehaviour
         actions.Clear();
 
         enemy.Turn(player);
+
+        yield return new WaitForSeconds(0.5f);
+        player.StartTurn();
     }
 
     void Update()
