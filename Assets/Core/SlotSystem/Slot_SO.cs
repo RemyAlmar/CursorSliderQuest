@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,7 +7,9 @@ public class Slot_SO : ScriptableObject
     public string idName;
     public int id;
     public int size = 1;
+    public bool canBeDeactivated = true;
     [SerializeReference] public Action action;
+    public Color32 Color = new(255, 255, 255, 1);
 
 #if UNITY_EDITOR
     public void OnEnable()

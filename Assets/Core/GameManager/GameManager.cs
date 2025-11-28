@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +8,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private IEntity enemyEntity;
     [SerializeField] private IEntity playerEntity;
     [SerializeField] private Player playerPrefab;
-    private List<IAction> actions = new List<IAction>();
-    public bool anyActionRegistered => actions.Count > 0;
+    private List<Slot> slots = new List<Slot>();
+    public bool anyActionRegistered => slots.Count > 0;
 
     public List<Monster> enemyPrefabs;
 
@@ -149,11 +148,11 @@ public class GameManager : MonoBehaviour
         enemyEntity.Initialize();
     }
 
-    public void RegisterAction(IAction _action)
+    public void RegisterAction(Slot _slot)
     {
-        if (actions == null)
-            actions = new List<IAction>();
-        actions.Add(_action);
+        if (slots == null)
+            slots = new List<Slot>();
+        slots.Add(_slot);
     }
 
     public void StopFight()
@@ -167,7 +166,7 @@ public class GameManager : MonoBehaviour
         turnCountThisFight = 0;
 
         Destroy(((MonoBehaviour)_enemy).gameObject);
-        
+
         if (playerEntity is Player player)
         {
             Debug.Log("Fight Ended. Resetting Player.");
@@ -185,14 +184,14 @@ public class GameManager : MonoBehaviour
         Debug.Log("---- End of Turn ----");
         yield return new WaitForSeconds(0.5f);
         turnCountThisFight++;
-        foreach (IAction action in actions)
+        foreach (Slot slot in slots)
         {
-            Debug.Log("Executed Action: " + action.GetType().Name);
-            action.Execute(playerEntity, enemyEntity);
+            Debug.Log("Executed Slot: " + slot.GetType().Name);
+            slot.Execute(playerEntity, enemyEntity);
 
             if (!inFight)
             {
-                actions.Clear();
+                slots.Clear();
                 yield break;
             }
 
@@ -200,7 +199,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitUntil(() => !enemyEntity.isOccupied);
             Debug.Log("Enemy is free to act now.");
         }
-        actions.Clear();
+        slots.Clear();
 
         Debug.Log("---- Enemy Turn ----");
         enemyEntity.Turn(playerEntity);

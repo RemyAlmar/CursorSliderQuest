@@ -10,20 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afa0303d05a307b4db0028207d43da2e, type: 3}
-  m_Name: SlotData_Sword
+  m_Name: SlotData_Empty
   m_EditorClassIdentifier: Assembly-CSharp::Slot_SO
-  idName: Sword
-  id: 1529145355
-  size: 3
+  idName: Empty
+  id: -1459219776
+  size: 1
   action:
-    rid: 2818972540356264001
+    rid: -2
   Color:
     serializedVersion: 2
-    rgba: 4293040901
+    rgba: 4286480000
   references:
     version: 2
     RefIds:
-    - rid: 2818972540356264001
-      type: {class: Action_Slash, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 5
+    - rid: -2
+      type: {class: , ns: , asm: }
