@@ -1,13 +1,14 @@
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CursorSliderVisual : MonoBehaviour
 {
     [SerializeField] private SlotVisual slotVisualPrefab;
+    [SerializeField] private Transform cursorVisualTransform;
+    float xCursorOffset = -0.5f;
     List<SlotVisual> slotVisuals = new();
-    internal void Initialize(List<Slot> slots)
+    
+    public void Initialize(List<Slot> slots)
     {
         ClearList();
         for (int i = 0; i < slots.Count; i++)
@@ -31,6 +32,11 @@ public class CursorSliderVisual : MonoBehaviour
             slotVisual.Initialize(targetColor);
             slotVisuals.Add(slotVisual);
         }
+    }
+
+    public void UpdateCursorPosition(float cursorValue)
+    {
+        cursorVisualTransform.localPosition = new Vector3(cursorValue + xCursorOffset, 0f, 0f);
     }
 
     private void ClearList()

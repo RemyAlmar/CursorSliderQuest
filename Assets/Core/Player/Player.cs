@@ -70,9 +70,10 @@ public class Player : MonoBehaviour, IEntity
         {
             direction *= -1;
         }
+        cursorSliderVisual.UpdateCursorPosition(currentCursor);
     }
 
-    internal void DoAction()
+    public void DoAction()
     {
         IAction targetAction = slots[Mathf.Clamp((int)currentCursor, 0, slots.Count - 1)].action;
         GameManager.Instance.RegisterAction(targetAction);
@@ -85,7 +86,7 @@ public class Player : MonoBehaviour, IEntity
     }
 }
 
-internal class Slot
+public class Slot
 {
     public IAction action = null;
 
