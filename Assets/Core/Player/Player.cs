@@ -22,7 +22,8 @@ public class Player : MonoBehaviour, IEntity
     public List<Slot_SO> slotsSO = new();
     public CursorSliderVisual cursorSliderVisual;
     public float turnTimeSecond = 4f;
-    public bool isMyTurn = false;
+    public bool isMyTurn { get; set; } = false;
+    public bool isOccupied { get; set; } = false;
 
     public void Initialize()
     {
@@ -111,7 +112,15 @@ public class Player : MonoBehaviour, IEntity
         if (health <= 0)
         {
             Debug.Log("Player Defeated!");
+            GameManager.Instance.StopFight();
         }
+    }
+
+    public void OutFightReset()
+    {
+        Debug.Log("Resetting Player State.");
+        health = 100;
+        cursorSliderVisual.ResetVisual();
     }
 
     // Player Update
@@ -144,7 +153,7 @@ public class Player : MonoBehaviour, IEntity
 
     public void DoAction()
     {
-        if (GameManager.CanDoAction && isMyTurn)
+        if (GameManager.CanDoAction && GameManager.Instance.inFight && isMyTurn)
         {
             int slotIndex = Mathf.Clamp((int)currentCursor, 0, slots.Count - 1);
             IAction targetAction = slots[slotIndex].action;
