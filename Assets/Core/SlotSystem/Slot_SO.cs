@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,8 +7,10 @@ public class Slot_SO : ScriptableObject
 {
     public string idName;
     public int id;
-    public int Size = 1;
+    public int size = 1;
+    [SerializeReference] public Action action;
 
+#if UNITY_EDITOR
     public void OnEnable()
     {
         idName = string.IsNullOrEmpty(idName) ? name : idName;
@@ -39,4 +42,5 @@ public class Slot_SO : ScriptableObject
         }
         AssetDatabase.SaveAssets();
     }
+#endif
 }

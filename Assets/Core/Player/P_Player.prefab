@@ -51,8 +51,16 @@ MonoBehaviour:
   doActionButton: {fileID: 3319137891527096846}
   currentCursor: 0
   direction: 1
+  slotsSO:
+  - {fileID: 11400000, guid: 4adfa9ad785c5464ca9b7c2f9eec0881, type: 2}
+  - {fileID: 11400000, guid: 4adfa9ad785c5464ca9b7c2f9eec0881, type: 2}
+  - {fileID: 11400000, guid: 4adfa9ad785c5464ca9b7c2f9eec0881, type: 2}
+  - {fileID: 11400000, guid: 4adfa9ad785c5464ca9b7c2f9eec0881, type: 2}
+  - {fileID: 11400000, guid: 4adfa9ad785c5464ca9b7c2f9eec0881, type: 2}
+  - {fileID: 11400000, guid: 4adfa9ad785c5464ca9b7c2f9eec0881, type: 2}
   cursorSliderVisual: {fileID: 6350193064248335411}
   turnTimeSecond: 1
+  isMyTurn: 0
 --- !u!1001 &71075981202781371
 PrefabInstance:
   m_ObjectHideFlags: 0
