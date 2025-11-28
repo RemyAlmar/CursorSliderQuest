@@ -122,6 +122,7 @@ Transform:
   m_Children:
   - {fileID: 3834356889025739136}
   - {fileID: 891533185355519380}
+  - {fileID: 8381437351641619886}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7962177985341834665
@@ -138,6 +139,92 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CursorSliderVisual
   slotVisualPrefab: {fileID: -4698061424934278819, guid: 6f9b8a6ae6d839044909472785ae9fea, type: 3}
   cursorVisualTransform: {fileID: 891533185355519380}
+  endTurnVisualTransform: {fileID: 8381437351641619886}
+  endTurnVisualAnimator: {fileID: 0}
+  endTurnVisual_StartTurnAnimHash: 1138966150
+--- !u!1001 &1891534229323103027
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1207549786176193040}
+    m_Modifications:
+    - target: {fileID: 266675608122658046, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_Name
+      value: P_EndTurnVisual
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.993
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 266675608122658046, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 834644796674907187}
+  m_SourcePrefab: {fileID: 100100000, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+--- !u!1 &1869970561306867661 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 266675608122658046, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+  m_PrefabInstance: {fileID: 1891534229323103027}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &834644796674907187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869970561306867661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb173c49b8a528f44bb46c140a92d07b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimatorUtilities
+  keepAnimatorStateOnDisable: 0
+--- !u!4 &8381437351641619886 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7931063799438747293, guid: 467b75046c04f7640984b301d28b77ad, type: 3}
+  m_PrefabInstance: {fileID: 1891534229323103027}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8330126271963594877
 PrefabInstance:
   m_ObjectHideFlags: 0

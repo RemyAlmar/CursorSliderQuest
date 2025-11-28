@@ -13,7 +13,11 @@ public class DoActionButton : MonoBehaviour, IClickable
         originalScale = transform.localScale;
     }
 
-    public void OnClick()
+    public void OnClick() { }
+
+    public void OnClickOutside() { }
+
+    public void OnCursorDown()
     {
         player.DoAction();
 
@@ -24,10 +28,6 @@ public class DoActionButton : MonoBehaviour, IClickable
         }
         clickFeedbackRoutine = StartCoroutine(ClickFeedback());
     }
-
-    public void OnClickOutside() { }
-
-    public void OnCursorDown() { }
 
     public void OnCursorEnter() { }
 

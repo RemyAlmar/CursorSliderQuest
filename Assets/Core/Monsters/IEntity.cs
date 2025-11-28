@@ -1,4 +1,3 @@
-using UnityEngine;
 
 public interface IEntity
 {
@@ -6,6 +5,7 @@ public interface IEntity
     int Damage { get; }
     
     void Initialize();
+    void StartTurn();
     public void TakeDamage(int _damage);
     void Turn(IEntity _entity);
 }

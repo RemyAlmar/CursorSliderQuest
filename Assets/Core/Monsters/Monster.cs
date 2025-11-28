@@ -19,6 +19,10 @@ public class Monster : MonoBehaviour, IEntity
         health = 100;
         damage = 10;
     }
+    public void StartTurn()
+    {
+        // Placeholder for any start turn logic
+    }
 
     public void Turn(IEntity player)
     {
