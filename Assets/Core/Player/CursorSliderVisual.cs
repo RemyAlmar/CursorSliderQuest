@@ -22,19 +22,8 @@ public class CursorSliderVisual : MonoBehaviour
             Slot slot = slots[i];
             SlotVisual slotVisual = Instantiate(slotVisualPrefab, transform);
             slotVisual.transform.localPosition = new Vector3(i, 0f, 0f);
-            Color32 targetColor = new Color32(100, 100, 100, 255);
-            if (slot.action != null)
-            {
-                switch (slot.action)
-                {
-                    case Action_Slash:
-                        targetColor = new Color32(255, 0, 0, 255);
-                        break;
-                    case Action_Void:
-                        targetColor = new Color32(200, 200, 200, 255);
-                        break;
-                }
-            }
+            Color32 targetColor = slot.slotData.Color;
+
             slotVisual.Initialize(targetColor);
             slotVisuals.Add(slotVisual);
         }

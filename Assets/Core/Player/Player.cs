@@ -9,8 +9,8 @@ public class Player : MonoBehaviour, IEntity
     public int damage = 15;
     public int Health { get => health; }
     public int Damage { get => damage; }
+    public Slot_SO slotDefault;
 
-    public IAction[] actions;
 
     public DoActionButton doActionButton;
 
@@ -24,7 +24,6 @@ public class Player : MonoBehaviour, IEntity
     public float turnTimeSecond = 4f;
     public bool isMyTurn { get; set; } = false;
     public bool isOccupied { get; set; } = false;
-
     public void Initialize()
     {
         health = 100;
@@ -32,10 +31,6 @@ public class Player : MonoBehaviour, IEntity
         doActionButton.player = this;
         isMyTurn = true;
 
-        actions = new IAction[]
-        {
-            new Action_Slash()
-        };
         InitializeSlots(slotsSO);
         FillOutRestArray(); // TO SUPP AVEC LA FONCTION
 
@@ -58,15 +53,12 @@ public class Player : MonoBehaviour, IEntity
         int _toAdd = (int)cursorSliderMax - slots.Count;
         for (int i = 0; i < _toAdd; i++)
         {
-            Slot _slot = new()
-            {
-                size = 1,
-                placementIndex = slots.Count
-            };
+            int _currentIndex = slots.Count;
+            Slot _slot = new(slotDefault, _currentIndex);
+
             slots.Add(_slot);
         }
     }
-
 
     public void InitializeSlots(List<Slot_SO> _slotsSO)
     {
@@ -77,9 +69,9 @@ public class Player : MonoBehaviour, IEntity
             if ((slots.Count + _slotData.size) > cursorSliderMax) continue;
 
             int _currentIndex = slots.Count;
+            Slot _slot = new(_slotData, _currentIndex);
             for (int i = 0; i < _slotData.size; i++)
             {
-                Slot _slot = new(_slotData, _currentIndex);
                 slots.Add(_slot);
             }
         }
@@ -91,7 +83,6 @@ public class Player : MonoBehaviour, IEntity
     }
     public int GetNeighboringSlotIndex(int _slotIndex, int _dir = 1)
     {
-        _dir = Math.Sign(_dir);
         Slot _slot = slots[Mathf.Clamp(0, _slotIndex, (int)cursorSliderMax)];
 
         int _neighborIndex = _dir > 0 ? _slot.placementIndex + _slot.size : _slot.placementIndex - 1;
@@ -156,13 +147,12 @@ public class Player : MonoBehaviour, IEntity
         if (GameManager.CanDoAction && GameManager.Instance.inFight && isMyTurn)
         {
             int slotIndex = Mathf.Clamp((int)currentCursor, 0, slots.Count - 1);
-            IAction targetAction = slots[slotIndex].action;
-            Debug.Log($"Index [{slotIndex}]  ||||||    Voisin Gauche => {GetNeighboringSlotIndex(slotIndex, -1)} || Voisin Droit => {GetNeighboringSlotIndex(slotIndex, 1)}");
-            if (targetAction.CanBeDeactivated)
+            Slot _targetSlot = slots[slotIndex];
+            if (_targetSlot.slotData.canBeDeactivated) // CE SERAIT PAS LE SLOT PLUTOT QUI S'ACTIVE OU SE DESACTIVE?
             {
                 // TODO Visual Feedback for Deactivation and deactivate
             }
-            GameManager.Instance.RegisterAction(targetAction);
+            GameManager.Instance.RegisterAction(_targetSlot); // ON ENREGISTRERAIT PAS LE SLOT PLUTOT? ET LE SLOT EXECUTE CES ACTIONS ?
 
             // Visual Feedback
             cursorSliderVisual.FeedbackAction(slotIndex);
