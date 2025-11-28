@@ -6,8 +6,8 @@ using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private IEntity enemy;
-    [SerializeField] private IEntity player;
+    [SerializeField] private IEntity enemyEntity;
+    [SerializeField] private IEntity playerEntity;
     [SerializeField] private Player playerPrefab;
     private List<IAction> actions = new List<IAction>();
     public bool anyActionRegistered => actions.Count > 0;
@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public List<Monster> enemyPrefabs;
 
     public static GameManager Instance { get; private set; }
-    public static bool CanDoAction => Instance.enemy != null && Instance.player != null && Instance.enemy.Health > 0 && Instance.player.Health > 0;
+    public static bool CanDoAction => Instance.enemyEntity != null && Instance.playerEntity != null && Instance.enemyEntity.Health > 0 && Instance.playerEntity.Health > 0;
 
     // Inputs
     private RaycastHit hitInfo;
@@ -29,8 +29,7 @@ public class GameManager : MonoBehaviour
     public int turnCountThisFight = 0;
     public float startTurnDelay = 0.5f;
 
-    // Debug
-    public List<string> debugActionNames = new List<string>();
+    public bool inFight = false;
 
     void Awake()
     {
@@ -42,65 +41,7 @@ public class GameManager : MonoBehaviour
         mainCamera = Camera.main;
         SpawnPlayer();
         SpawnEnemy();
-    }
-
-    private void SpawnPlayer()
-    {
-        player = Instantiate(playerPrefab);
-        player.Initialize();
-    }
-
-    private void SpawnEnemy()
-    {
-        enemy = Instantiate(enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Count)]);
-        enemy.Initialize();
-    }
-
-    public void RegisterAction(IAction _action)
-    {
-        if (actions == null)
-            actions = new List<IAction>();
-        actions.Add(_action);
-
-        debugActionNames.Add(_action.GetType().Name);
-    }
-
-    public void EnemyDefeated(IEntity _enemy)
-    {
-        turnCountThisFight = 0;
-        debugActionNames.Clear();
-
-        Destroy(((MonoBehaviour)_enemy).gameObject);
-        SpawnEnemy();
-
-        player.Initialize();
-    }
-
-    public void EndTurn()
-    {
-        StartCoroutine(EndTurnRoutine());
-    }
-
-    IEnumerator EndTurnRoutine()
-    {
-        Debug.Log("---- End of Turn ----");
-        yield return new WaitForSeconds(0.5f);
-        turnCountThisFight++;
-        foreach (string actionName in debugActionNames)
-        {
-            Debug.Log("Executed Action: " + actionName);
-        }
-        debugActionNames.Clear();
-        foreach (IAction action in actions)
-        {
-            action.Execute(player, enemy);
-        }
-        actions.Clear();
-
-        enemy.Turn(player);
-
-        yield return new WaitForSeconds(0.5f);
-        player.StartTurn();
+        inFight = true;
     }
 
     void Update()
@@ -174,8 +115,11 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // Upate player
-        player.Turn(enemy);
+        if (inFight)
+        {
+            // Upate player
+            playerEntity.Turn(enemyEntity);
+        }
     }
 
     #region Raycast Input Helpers
@@ -192,4 +136,80 @@ public class GameManager : MonoBehaviour
         return Physics.Raycast(ray, out hitInfo);
     }
     #endregion
+
+    private void SpawnPlayer()
+    {
+        playerEntity = Instantiate(playerPrefab);
+        playerEntity.Initialize();
+    }
+
+    private void SpawnEnemy()
+    {
+        enemyEntity = Instantiate(enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Count)]);
+        enemyEntity.Initialize();
+    }
+
+    public void RegisterAction(IAction _action)
+    {
+        if (actions == null)
+            actions = new List<IAction>();
+        actions.Add(_action);
+    }
+
+    public void StopFight()
+    {
+        Debug.Log("Fight Stopped.");
+        inFight = false;
+    }
+
+    public void EnemyDefeated(IEntity _enemy)
+    {
+        turnCountThisFight = 0;
+
+        Destroy(((MonoBehaviour)_enemy).gameObject);
+        
+        if (playerEntity is Player player)
+        {
+            Debug.Log("Fight Ended. Resetting Player.");
+            player.OutFightReset();
+        }
+    }
+
+    public void EndTurn()
+    {
+        StartCoroutine(EndTurnRoutine());
+    }
+
+    IEnumerator EndTurnRoutine()
+    {
+        Debug.Log("---- End of Turn ----");
+        yield return new WaitForSeconds(0.5f);
+        turnCountThisFight++;
+        foreach (IAction action in actions)
+        {
+            Debug.Log("Executed Action: " + action.GetType().Name);
+            action.Execute(playerEntity, enemyEntity);
+
+            if (!inFight)
+            {
+                actions.Clear();
+                yield break;
+            }
+
+            Debug.Log("Enemy is occupied, waiting...");
+            yield return new WaitUntil(() => !enemyEntity.isOccupied);
+            Debug.Log("Enemy is free to act now.");
+        }
+        actions.Clear();
+
+        Debug.Log("---- Enemy Turn ----");
+        enemyEntity.Turn(playerEntity);
+
+        Debug.Log("Waiting for enemy to finish turn...");
+        yield return new WaitUntil(() => !enemyEntity.isMyTurn);
+        Debug.Log("Enemy turn finished.");
+
+        yield return new WaitForSeconds(startTurnDelay);
+        playerEntity.StartTurn();
+    }
 }

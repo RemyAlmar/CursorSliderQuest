@@ -1,4 +1,6 @@
 using System.Collections;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class Monster : MonoBehaviour, IEntity
@@ -8,16 +10,31 @@ public class Monster : MonoBehaviour, IEntity
 
     public int Health { get => health; }
     public int Damage { get => damage; }
+    public bool isMyTurn { get; set; } = false;
+    public bool isOccupied { get; set; } = false;
 
 
     public AudioClip hitSound;
     public AudioClip attackSound;
+
+    private Animator animator;
+    private int animAttackHash = Animator.StringToHash("Attack");
+    private int animHitHash = Animator.StringToHash("Hit");
+    [SerializeField] private float hitAnimTime = 0.2f;
+    private int animDeathHash = Animator.StringToHash("Death");
+    [SerializeField] private float deathAnimTime = 1.5f;
 
     Coroutine dieRoutine;
     public void Initialize()
     {
         health = 100;
         damage = 10;
+
+        // Initialize Animator
+        animator = GetComponent<Animator>();
+        animator.enabled = true;
+        animator.Rebind();
+        isMyTurn = false;
     }
     public void StartTurn()
     {
@@ -25,6 +42,68 @@ public class Monster : MonoBehaviour, IEntity
     }
 
     public void Turn(IEntity player)
+    {
+        StartCoroutine(TurnRoutine(player));
+    }
+
+    IEnumerator TurnRoutine(IEntity player)
+    {
+        isMyTurn = true;
+        animator.SetTrigger(animAttackHash);
+
+        yield return new WaitForSeconds(1f);
+        
+        player.TakeDamage(damage);
+        if (!GameManager.Instance.inFight)
+        {
+            isMyTurn = false;
+            yield break;
+        }
+
+        isMyTurn = false;
+    }
+
+    public void TakeDamage(int amount)
+    {
+        isOccupied = true;
+        health -= amount;
+        if (health <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            animator.SetTrigger(animHitHash);
+            StartCoroutine(OccupiedRoutine(hitAnimTime));
+        }
+    }
+
+    IEnumerator OccupiedRoutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        isOccupied = false;
+    }
+
+    private void Die()
+    {
+        GameManager.Instance.StopFight();
+        if (dieRoutine != null) StopCoroutine(dieRoutine);
+        dieRoutine = StartCoroutine(DieRoutine());
+    }
+
+    IEnumerator DieRoutine()
+    {
+        animator.SetTrigger(animDeathHash);
+
+        // Placeholder for death animation duration
+        yield return new WaitForSeconds(deathAnimTime);
+
+        isOccupied = false;
+        GameManager.Instance.EnemyDefeated(this);
+    }
+
+    // Sounds
+    public void PlayAttackSound()
     {
         if (attackSound != null)
         {
@@ -36,59 +115,31 @@ public class Monster : MonoBehaviour, IEntity
                 loop = false
             }, attackSound);
         }
-        player.TakeDamage(damage);
     }
-
-    public void TakeDamage(int amount)
+    public void PlayHitSound()
     {
-        health -= amount;
-        if (health <= 0)
+        if (hitSound != null)
         {
-            Die();
-        }
-        else
-        {
-            if (hitSound != null)
+            SoundManager.Instance.PlaySound(new SoundManager.SoundOptions
             {
-                SoundManager.Instance.PlaySound(new SoundManager.SoundOptions
-                {
-                    soundType = SoundManager.SoundType.SFX,
-                    volume = 1f,
-                    pitch = 0.7f,
-                    loop = false
-                }, hitSound);
-            }
+                soundType = SoundManager.SoundType.SFX,
+                volume = 1f,
+                pitch = 0.7f,
+                loop = false
+            }, hitSound);
         }
     }
-
-    private void Die()
+    public void PlayDeathSound(float pitch)
     {
-        if (dieRoutine != null) StopCoroutine(dieRoutine);
-        dieRoutine = StartCoroutine(DieRoutine());
-    }
-
-    IEnumerator DieRoutine()
-    {
-        var option = new SoundManager.SoundOptions
+        if (hitSound != null)
         {
-            soundType = SoundManager.SoundType.SFX,
-            volume = 1f,
-            pitch = 0.7f,
-            loop = false
-        };
-
-        // Placeholder for death animation duration
-        yield return new WaitForSeconds(0.5f);
-
-        if (hitSound != null) SoundManager.Instance.PlaySound(option, hitSound);
-        yield return new WaitForSeconds(0.1f);
-        option.pitch = 0.5f;
-        if (hitSound != null) SoundManager.Instance.PlaySound(option, hitSound);
-        yield return new WaitForSeconds(0.1f);
-        option.pitch = 0.3f;
-        if (hitSound != null) SoundManager.Instance.PlaySound(option, hitSound);
-        yield return new WaitForSeconds(0.1f);
-
-        GameManager.Instance.EnemyDefeated(this);
+            SoundManager.Instance.PlaySound(new SoundManager.SoundOptions
+            {
+                soundType = SoundManager.SoundType.SFX,
+                volume = 1f,
+                pitch = pitch,
+                loop = false
+            }, hitSound);
+        }
     }
 }

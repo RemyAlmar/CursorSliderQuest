@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class CursorSliderVisual : MonoBehaviour
     private Animator endTurnVisualAnimator;
     private int endTurnVisual_StartTurnAnimHash = Animator.StringToHash("StartTurn");
     private int endTurnVisual_AnimationSpeedHash = Animator.StringToHash("AnimationSpeed");
+    private int endTurnVisual_ResetAnimHash = Animator.StringToHash("Reset");
     float xCursorOffset = -0.5f;
     List<SlotVisual> slotVisuals = new();
 
@@ -77,5 +79,10 @@ public class CursorSliderVisual : MonoBehaviour
             endTurnVisualAnimator.SetFloat(endTurnVisual_AnimationSpeedHash, delay);
             endTurnVisualAnimator.SetTrigger(endTurnVisual_StartTurnAnimHash);
         }
+    }
+
+    internal void ResetVisual()
+    {
+        endTurnVisualAnimator.SetTrigger(endTurnVisual_ResetAnimHash);
     }
 }
