@@ -9,6 +9,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private IEntity player;
     [SerializeField] private Player playerPrefab;
     private List<IAction> actions = new List<IAction>();
+
+    public List<Monster> enemyPrefabs;
+
+    public static GameManager Instance { get; private set; }
+    public static bool CanDoAction => Instance.enemy != null && Instance.player != null && Instance.enemy.Health > 0 && Instance.player.Health > 0;
+
+    // Inputs
     private RaycastHit hitInfo;
     private Camera mainCamera;
     private IClickable lastClickable;
@@ -16,10 +23,6 @@ public class GameManager : MonoBehaviour
     private float clickThreshold = 0.3f;
     private float lastClickTime = 0f;
     private bool lastPressedOnUI = false;
-
-    public List<Monster> enemyPrefabs;
-
-    public static GameManager Instance { get; private set; }
 
     void Awake()
     {
@@ -141,6 +144,9 @@ public class GameManager : MonoBehaviour
                 lastPressedOnUI = false;
             }
         }
+
+        // Upate player
+        player.Turn(enemy);
     }
 
     #region Raycast Input Helpers
