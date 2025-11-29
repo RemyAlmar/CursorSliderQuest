@@ -8,8 +8,9 @@ public class Slot_SO : ScriptableObject
     public int id;
     public int size = 1;
     public bool canBeDeactivated = true;
-    [SerializeReference] public Action action;
-    public Color32 Color = new(255, 255, 255, 1);
+    [SerializeReference] public Action actionActivate;
+    [SerializeReference] public Action actionReset;
+    [SerializeReference] public SlotVisual slotVisualPrefab;
 
 #if UNITY_EDITOR
     public void OnEnable()
@@ -23,8 +24,8 @@ public class Slot_SO : ScriptableObject
 
         EditorApplication.delayCall += () =>
         {
-            if (this == null) return;   // évite les refs détruites
-            RenameAsset(this, idName, "SlotData_");
+            if (this == null) return;   // Avoid destroyed refs
+            RenameAsset(this, idName, "SlotData_", $"_size{size}");
         };
     }
     public static void RenameAsset(Object asset, string _newName, string _prefix = null, string _suffix = null)

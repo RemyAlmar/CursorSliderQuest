@@ -1,18 +1,19 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-internal class SlotVisual : MonoBehaviour
+public class SlotVisual : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private List<SpriteRenderer> spriteRenderers;
     Coroutine feeedbackCoroutine;
     Vector3 originalScale;
     Color32 originalColor;
 
-    public void Initialize(Color32 color)
+    public void Initialize()
     {
-        spriteRenderer.color = color;
         originalScale = transform.localScale;
-        originalColor = color;
+        originalColor = spriteRenderers[0].color;
     }
 
     public void ActivationFeedback()
@@ -20,7 +21,7 @@ internal class SlotVisual : MonoBehaviour
         if (feeedbackCoroutine != null)
         {
             StopCoroutine(feeedbackCoroutine);
-            spriteRenderer.color = originalColor;
+            spriteRenderers[0].color = originalColor;
             transform.localScale = originalScale;
         }
         feeedbackCoroutine = StartCoroutine(FeedbackRoutine());
@@ -28,7 +29,7 @@ internal class SlotVisual : MonoBehaviour
 
     IEnumerator FeedbackRoutine()
     {
-        Color32 originalColor = spriteRenderer.color;
+        Color32 originalColor = spriteRenderers[0].color;
         Color32 highlightColor = new Color32(255, 255, 255, 255);
         float duration = 0.2f;
         float elapsed = 0f;
@@ -41,7 +42,7 @@ internal class SlotVisual : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
-            spriteRenderer.color = Color32.Lerp(originalColor, highlightColor, t);
+            spriteRenderers[0].color = Color32.Lerp(originalColor, highlightColor, t);
             transform.localScale = Vector3.Lerp(originalScale, highlightScale, t);
             yield return null;
         }
@@ -52,12 +53,35 @@ internal class SlotVisual : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
-            spriteRenderer.color = Color32.Lerp(highlightColor, originalColor, t);
+            spriteRenderers[0].color = Color32.Lerp(highlightColor, originalColor, t);
             transform.localScale = Vector3.Lerp(highlightScale, originalScale, t);
             yield return null;
         }
 
-        spriteRenderer.color = originalColor;
+        spriteRenderers[0].color = originalColor;
         transform.localScale = originalScale;
+    }
+
+    public void SetColor(Color32 color)
+    {
+        Debug.Log("Setting SlotVisual color to: " + color);
+        spriteRenderers[0].color = color;
+    }
+
+    internal void UpdateVisual(ActionState state)
+    {
+        switch (state)
+        {
+            case ActionState.Neutral:
+                SetColor(originalColor);
+                break;
+            case ActionState.Activated:
+                SetColor(new Color32(200, 200, 200, 255)); // Lighter color for activated
+                break;
+            case ActionState.Deactivated:
+                SetColor(new Color32(100, 100, 100, 255)); // Darker color for deactivated
+                break;
+                // Add other states as needed
+        }
     }
 }

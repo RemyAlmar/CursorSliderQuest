@@ -17,15 +17,34 @@ public class CursorSliderVisual : MonoBehaviour
     public void Initialize(List<Slot> slots)
     {
         ClearList();
+        int targetIndex = 0;
+        bool slotVisualInstantiated = false;
+        SlotVisual lastSlotVisual = null;
         for (int i = 0; i < slots.Count; i++)
         {
             Slot slot = slots[i];
-            SlotVisual slotVisual = Instantiate(slotVisualPrefab, transform);
-            slotVisual.transform.localPosition = new Vector3(i, 0f, 0f);
-            Color32 targetColor = slot.slotData.Color;
 
-            slotVisual.Initialize(targetColor);
-            slotVisuals.Add(slotVisual);
+            if (!slotVisualInstantiated)
+            {
+                slotVisualInstantiated = true;
+                SlotVisual slotVisual = Instantiate(slot.slotData.slotVisualPrefab, transform);
+                lastSlotVisual = slotVisual;
+                slot.visual = slotVisual;
+                slotVisual.transform.localPosition = new Vector3(targetIndex + slot.slotData.size / 2f - 0.5f, 0f, 0f);
+
+                slotVisual.Initialize();
+                slotVisuals.Add(slotVisual);
+            }
+            else
+            {
+                slot.visual = lastSlotVisual;
+            }
+
+            if (i == slot.slotData.size + targetIndex - 1)
+            {
+                targetIndex += slot.slotData.size;
+                slotVisualInstantiated = false;
+            }
         }
 
         // End Turn Animation Initialization

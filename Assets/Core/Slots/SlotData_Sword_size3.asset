@@ -10,20 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afa0303d05a307b4db0028207d43da2e, type: 3}
-  m_Name: SlotData_Sword
+  m_Name: SlotData_Sword_size3
   m_EditorClassIdentifier: Assembly-CSharp::Slot_SO
   idName: Sword
   id: 1529145355
   size: 3
-  action:
-    rid: 2818972540356264001
-  Color:
-    serializedVersion: 2
-    rgba: 4293040901
+  canBeDeactivated: 1
+  actionActivate:
+    rid: 7085022676841922629
+  actionReset:
+    rid: 7085022676841922630
+  slotVisualPrefab: {fileID: 5526622897318018853, guid: f722c672ce50926439b6211f3bf9c64a, type: 3}
   references:
     version: 2
     RefIds:
-    - rid: 2818972540356264001
+    - rid: 7085022676841922629
       type: {class: Action_Slash, ns: , asm: Assembly-CSharp}
       data:
         damage: 5
+        powerMult: 1
+    - rid: 7085022676841922630
+      type: {class: Action_Void, ns: , asm: Assembly-CSharp}
+      data: 

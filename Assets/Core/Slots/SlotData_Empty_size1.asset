@@ -10,18 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afa0303d05a307b4db0028207d43da2e, type: 3}
-  m_Name: SlotData_Empty
+  m_Name: SlotData_Empty_size1
   m_EditorClassIdentifier: Assembly-CSharp::Slot_SO
   idName: Empty
   id: -1459219776
   size: 1
-  action:
-    rid: -2
-  Color:
-    serializedVersion: 2
-    rgba: 4286480000
+  canBeDeactivated: 1
+  actionActivate:
+    rid: 7085022676841922625
+  actionReset:
+    rid: 7085022676841922626
+  slotVisualPrefab: {fileID: 5526622897318018853, guid: 705296ee5b1464240be7f29c494fe0ee, type: 3}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 7085022676841922625
+      type: {class: Action_Void, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 7085022676841922626
+      type: {class: Action_Void, ns: , asm: Assembly-CSharp}
+      data: 
