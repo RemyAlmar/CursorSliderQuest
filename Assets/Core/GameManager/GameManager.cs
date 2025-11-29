@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private IEntity playerEntity;
     [SerializeField] private Player playerPrefab;
     private List<Slot> slots = new List<Slot>();
-    public bool anyActionRegistered => slots.Count > 0;
+    public bool anySlotRegistered => slots.Count > 0;
 
     public List<Monster> enemyPrefabs;
 
@@ -148,7 +148,7 @@ public class GameManager : MonoBehaviour
         enemyEntity.Initialize();
     }
 
-    public void RegisterAction(Slot _slot)
+    public void RegisterSlot(Slot _slot)
     {
         if (slots == null)
             slots = new List<Slot>();
@@ -159,6 +159,11 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Fight Stopped.");
         inFight = false;
+        foreach (Slot slot in slots)
+        {
+            slot.ResetFight(playerEntity, enemyEntity);
+        }
+        slots.Clear();
     }
 
     public void EnemyDefeated(IEntity _enemy)
@@ -186,18 +191,19 @@ public class GameManager : MonoBehaviour
         turnCountThisFight++;
         foreach (Slot slot in slots)
         {
-            Debug.Log("Executed Slot: " + slot.GetType().Name);
-            slot.Execute(playerEntity, enemyEntity);
+            Debug.Log("Executed Slot: " + slot.action.GetType().Name);
+            slot.ExecuteEndTurn(playerEntity, enemyEntity);
 
             if (!inFight)
             {
-                slots.Clear();
                 yield break;
             }
 
             Debug.Log("Enemy is occupied, waiting...");
             yield return new WaitUntil(() => !enemyEntity.isOccupied);
             Debug.Log("Enemy is free to act now.");
+
+            slot.ResetTurn(playerEntity, enemyEntity);
         }
         slots.Clear();
 

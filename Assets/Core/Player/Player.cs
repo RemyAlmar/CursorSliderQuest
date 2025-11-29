@@ -132,7 +132,7 @@ public class Player : MonoBehaviour, IEntity
                 direction *= -1;
             }
 
-            if (GameManager.Instance.anyActionRegistered && resetSlider)
+            if (GameManager.Instance.anySlotRegistered && resetSlider)
             {
                 EndTurn();
             }
@@ -148,14 +148,8 @@ public class Player : MonoBehaviour, IEntity
         {
             int slotIndex = Mathf.Clamp((int)currentCursor, 0, slots.Count - 1);
             Slot _targetSlot = slots[slotIndex];
-            if (_targetSlot.slotData.canBeDeactivated) // CE SERAIT PAS LE SLOT PLUTOT QUI S'ACTIVE OU SE DESACTIVE?
-            {
-                // TODO Visual Feedback for Deactivation and deactivate
-            }
-            GameManager.Instance.RegisterAction(_targetSlot); // ON ENREGISTRERAIT PAS LE SLOT PLUTOT? ET LE SLOT EXECUTE CES ACTIONS ?
-
-            // Visual Feedback
-            cursorSliderVisual.FeedbackAction(slotIndex);
+            ActionState previsousActionState = _targetSlot.state;
+            ActionState endActionState = _targetSlot.ExecuteInTurn(previsousActionState, this, null);
         }
     }
 

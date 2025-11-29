@@ -1,63 +1,135 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-internal class SlotVisual : MonoBehaviour
+public class SlotVisual : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private List<SpriteRenderer> spriteRenderers;
     Coroutine feeedbackCoroutine;
     Vector3 originalScale;
-    Color32 originalColor;
+    Vector3 originalPosition;
 
-    public void Initialize(Color32 color)
+    [SerializeField] private Transform neutralTransform;
+    [SerializeField] private Transform activatedTransform;
+    [SerializeField] private Transform deactivatedTransform;
+
+    public void Initialize()
     {
-        spriteRenderer.color = color;
         originalScale = transform.localScale;
-        originalColor = color;
+        originalPosition = transform.localPosition;
+        InitializeVisual();
     }
 
-    public void ActivationFeedback()
+    public void ActivationFeedback(ActionState startActionState, ActionState endActionState)
     {
         if (feeedbackCoroutine != null)
         {
             StopCoroutine(feeedbackCoroutine);
-            spriteRenderer.color = originalColor;
             transform.localScale = originalScale;
+            transform.localPosition = originalPosition;
         }
         feeedbackCoroutine = StartCoroutine(FeedbackRoutine());
     }
 
     IEnumerator FeedbackRoutine()
     {
-        Color32 originalColor = spriteRenderer.color;
-        Color32 highlightColor = new Color32(255, 255, 255, 255);
         float duration = 0.2f;
         float elapsed = 0f;
 
         Vector3 originalScale = transform.localScale;
         Vector3 highlightScale = originalScale * 1.2f;
 
-        // Lerp color and scale up
+        // Lerp scale up
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
-            spriteRenderer.color = Color32.Lerp(originalColor, highlightColor, t);
             transform.localScale = Vector3.Lerp(originalScale, highlightScale, t);
             yield return null;
         }
 
         elapsed = 0f;
-        // Lerp color and scale back down
+        // Lerp scale back down
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
-            spriteRenderer.color = Color32.Lerp(highlightColor, originalColor, t);
             transform.localScale = Vector3.Lerp(highlightScale, originalScale, t);
             yield return null;
         }
 
-        spriteRenderer.color = originalColor;
         transform.localScale = originalScale;
+    }
+
+    public void SetColor(Color32 color)
+    {
+        Debug.Log("Setting SlotVisual color to: " + color);
+        spriteRenderers[0].color = color;
+    }
+
+    public void InitializeVisual()
+    {
+        neutralTransform.gameObject.SetActive(true);
+        activatedTransform.gameObject.SetActive(false);
+        deactivatedTransform.gameObject.SetActive(false);
+    }
+
+    public void UpdateVisual(ActionState startState, ActionState endState)
+    {
+        switch (startState)
+        {
+            case ActionState.Neutral:
+                neutralTransform.gameObject.SetActive(false);
+                break;
+            case ActionState.Activated:
+                activatedTransform.gameObject.SetActive(false);
+                break;
+            case ActionState.Deactivated:
+                deactivatedTransform.gameObject.SetActive(false);
+                break;
+        }
+        switch (endState)
+        {
+            case ActionState.Neutral:
+                neutralTransform.gameObject.SetActive(true);
+                break;
+            case ActionState.Activated:
+                activatedTransform.gameObject.SetActive(true);
+                break;
+            case ActionState.Deactivated:
+                deactivatedTransform.gameObject.SetActive(true);
+                break;
+        }
+    }
+
+    internal void NegativeFeedback()
+    {
+        if (feeedbackCoroutine != null)
+        {
+            StopCoroutine(feeedbackCoroutine);
+            transform.localScale = originalScale;
+            transform.localPosition = originalPosition;
+        }
+        feeedbackCoroutine = StartCoroutine(TrembleRoutine());
+
+        IEnumerator TrembleRoutine()
+        {
+            float duration = 0.3f;
+            float elapsed = 0f;
+            float trembleMagnitude = 0.1f;
+            int trembleCount = 8;
+            Vector3 basePosition = transform.localPosition;
+
+            while (elapsed < duration)
+            {
+                float t = elapsed / duration;
+                float angle = Mathf.Sin(t * trembleCount * Mathf.PI * 2) * trembleMagnitude;
+                transform.localPosition = basePosition + new Vector3(angle, 0, 0);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            transform.localPosition = basePosition;
+        }
     }
 }

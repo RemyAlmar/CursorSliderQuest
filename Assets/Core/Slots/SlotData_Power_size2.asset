@@ -10,20 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afa0303d05a307b4db0028207d43da2e, type: 3}
-  m_Name: SlotData_Power
+  m_Name: SlotData_Power_size2
   m_EditorClassIdentifier: Assembly-CSharp::Slot_SO
   idName: Power
   id: 1783312036
   size: 2
-  action:
-    rid: 2818972540356264002
-  Color:
-    serializedVersion: 2
-    rgba: 4279142109
+  canBeDeactivated: 1
+  actionActivate:
+    rid: 7085022676841922631
+  actionReset:
+    rid: 7085022676841922628
+  slotVisualPrefab: {fileID: 5526622897318018853, guid: 47371470f4fbf8242b4b0d53420056ed, type: 3}
   references:
     version: 2
     RefIds:
-    - rid: 2818972540356264002
+    - rid: 7085022676841922628
+      type: {class: Action_Void, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 7085022676841922631
       type: {class: Action_Power, ns: , asm: Assembly-CSharp}
       data:
-        powerMult: 3
+        powerMult: 2
