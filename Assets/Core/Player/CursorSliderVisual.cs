@@ -57,14 +57,6 @@ public class CursorSliderVisual : MonoBehaviour
         cursorVisualTransform.localPosition = new Vector3(cursorValue + xCursorOffset, 0f, 0f);
     }
 
-    internal void FeedbackAction(int slotIndex)
-    {
-        if (slotIndex >= 0 && slotIndex < slotVisuals.Count)
-        {
-            slotVisuals[slotIndex].ActivationFeedback();
-        }
-    }
-
     private void ClearList()
     {
         foreach (SlotVisual slotVisual in slotVisuals)

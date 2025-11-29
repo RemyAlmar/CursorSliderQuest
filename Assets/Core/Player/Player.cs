@@ -148,11 +148,8 @@ public class Player : MonoBehaviour, IEntity
         {
             int slotIndex = Mathf.Clamp((int)currentCursor, 0, slots.Count - 1);
             Slot _targetSlot = slots[slotIndex];
-            _targetSlot.ExecuteInTurn(this, null);
-            GameManager.Instance.RegisterSlot(_targetSlot);
-
-            // Visual Feedback
-            cursorSliderVisual.FeedbackAction(slotIndex);
+            ActionState previsousActionState = _targetSlot.state;
+            ActionState endActionState = _targetSlot.ExecuteInTurn(previsousActionState, this, null);
         }
     }
 

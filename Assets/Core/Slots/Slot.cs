@@ -3,9 +3,9 @@ using UnityEngine;
 [System.Serializable]
 public class Slot
 {
-    public ActionState state { get; set; }
-    public int activationsThisTurn { get; set; }
-    public int activationsThisFight { get; set; }
+    public ActionState state;
+    public int activationsThisTurn;
+    public int activationsThisFight;
 
     public Action action = null;
     public int size = 0;
@@ -29,19 +29,26 @@ public class Slot
         placementIndex = _index;
     }
 
-    public void ExecuteInTurn(IEntity _owner, IEntity _target)
+    public ActionState ExecuteInTurn(ActionState previsousActionState, IEntity _owner, IEntity _target)
     {
-        if (state == ActionState.Neutral)
+        if (state == ActionState.Neutral && slotData != null && activationsThisTurn < slotData.activationPerTurn)
         {
             action?.ExecuteInTurn(_owner, _target, placementIndex);
-            if (slotData != null && slotData.canBeDeactivated)
-            {
-                state = ActionState.Deactivated;
-                UpdateVisual();
-            }
+            ActionState previousState = state;
+            state = ActionState.Activated;
+            UpdateVisual(previousState, state);
             activationsThisTurn++;
             activationsThisFight++;
+            GameManager.Instance.RegisterSlot(this);
+
+            // Visual Feedback
+            visual.ActivationFeedback(previsousActionState, state);
         }
+        else
+        {
+            visual.NegativeFeedback();
+        }
+        return state;
     }
 
     public void ExecuteEndTurn(IEntity _owner, IEntity _target)
@@ -56,12 +63,12 @@ public class Slot
     {
         action?.ResetTurn(_owner, _target, placementIndex);
 
+        ActionState previousState = state;
         state = ActionState.Neutral;
 
-        UpdateVisual();
+        UpdateVisual(previousState, state);
 
-        activationsThisTurn++;
-        activationsThisFight++;
+        activationsThisTurn = 0;
     }
 
     public void ResetFight(IEntity _owner, IEntity _target)
@@ -77,23 +84,8 @@ public class Slot
         action?.MultiplyValue(_multiplier);
     }
 
-    void UpdateVisual()
+    void UpdateVisual(ActionState startState, ActionState endState)
     {
-        switch (state)
-        {
-            case ActionState.Neutral:
-                // Update visual to neutral state
-                visual.UpdateVisual(ActionState.Neutral);
-                break;
-            case ActionState.Activated:
-                // Update visual to activated state
-                visual.UpdateVisual(ActionState.Activated);
-                break;
-            case ActionState.Deactivated:
-                // Update visual to deactivated state
-                visual.UpdateVisual(ActionState.Deactivated);
-                break;
-                // Add other states as needed
-        }
+        visual.UpdateVisual(startState, endState);
     }
 }

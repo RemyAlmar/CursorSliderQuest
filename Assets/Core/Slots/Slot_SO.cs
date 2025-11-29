@@ -8,6 +8,7 @@ public class Slot_SO : ScriptableObject
     public int id;
     public int size = 1;
     public bool canBeDeactivated = true;
+    public int activationPerTurn = 1;
     [SerializeReference] public Action actionActivate;
     [SerializeReference] public Action actionReset;
     [SerializeReference] public SlotVisual slotVisualPrefab;

@@ -8,57 +8,57 @@ public class SlotVisual : MonoBehaviour
     [SerializeField] private List<SpriteRenderer> spriteRenderers;
     Coroutine feeedbackCoroutine;
     Vector3 originalScale;
-    Color32 originalColor;
+    Vector3 originalPosition;
+
+    [SerializeField] private Transform neutralTransform;
+    [SerializeField] private Transform activatedTransform;
+    [SerializeField] private Transform deactivatedTransform;
 
     public void Initialize()
     {
         originalScale = transform.localScale;
-        originalColor = spriteRenderers[0].color;
+        originalPosition = transform.localPosition;
+        InitializeVisual();
     }
 
-    public void ActivationFeedback()
+    public void ActivationFeedback(ActionState startActionState, ActionState endActionState)
     {
         if (feeedbackCoroutine != null)
         {
             StopCoroutine(feeedbackCoroutine);
-            spriteRenderers[0].color = originalColor;
             transform.localScale = originalScale;
+            transform.localPosition = originalPosition;
         }
         feeedbackCoroutine = StartCoroutine(FeedbackRoutine());
     }
 
     IEnumerator FeedbackRoutine()
     {
-        Color32 originalColor = spriteRenderers[0].color;
-        Color32 highlightColor = new Color32(255, 255, 255, 255);
         float duration = 0.2f;
         float elapsed = 0f;
 
         Vector3 originalScale = transform.localScale;
         Vector3 highlightScale = originalScale * 1.2f;
 
-        // Lerp color and scale up
+        // Lerp scale up
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
-            spriteRenderers[0].color = Color32.Lerp(originalColor, highlightColor, t);
             transform.localScale = Vector3.Lerp(originalScale, highlightScale, t);
             yield return null;
         }
 
         elapsed = 0f;
-        // Lerp color and scale back down
+        // Lerp scale back down
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
-            spriteRenderers[0].color = Color32.Lerp(highlightColor, originalColor, t);
             transform.localScale = Vector3.Lerp(highlightScale, originalScale, t);
             yield return null;
         }
 
-        spriteRenderers[0].color = originalColor;
         transform.localScale = originalScale;
     }
 
@@ -68,20 +68,68 @@ public class SlotVisual : MonoBehaviour
         spriteRenderers[0].color = color;
     }
 
-    internal void UpdateVisual(ActionState state)
+    public void InitializeVisual()
     {
-        switch (state)
+        neutralTransform.gameObject.SetActive(true);
+        activatedTransform.gameObject.SetActive(false);
+        deactivatedTransform.gameObject.SetActive(false);
+    }
+
+    public void UpdateVisual(ActionState startState, ActionState endState)
+    {
+        switch (startState)
         {
             case ActionState.Neutral:
-                SetColor(originalColor);
+                neutralTransform.gameObject.SetActive(false);
                 break;
             case ActionState.Activated:
-                SetColor(new Color32(200, 200, 200, 255)); // Lighter color for activated
+                activatedTransform.gameObject.SetActive(false);
                 break;
             case ActionState.Deactivated:
-                SetColor(new Color32(100, 100, 100, 255)); // Darker color for deactivated
+                deactivatedTransform.gameObject.SetActive(false);
                 break;
-                // Add other states as needed
+        }
+        switch (endState)
+        {
+            case ActionState.Neutral:
+                neutralTransform.gameObject.SetActive(true);
+                break;
+            case ActionState.Activated:
+                activatedTransform.gameObject.SetActive(true);
+                break;
+            case ActionState.Deactivated:
+                deactivatedTransform.gameObject.SetActive(true);
+                break;
+        }
+    }
+
+    internal void NegativeFeedback()
+    {
+        if (feeedbackCoroutine != null)
+        {
+            StopCoroutine(feeedbackCoroutine);
+            transform.localScale = originalScale;
+            transform.localPosition = originalPosition;
+        }
+        feeedbackCoroutine = StartCoroutine(TrembleRoutine());
+
+        IEnumerator TrembleRoutine()
+        {
+            float duration = 0.3f;
+            float elapsed = 0f;
+            float trembleMagnitude = 0.1f;
+            int trembleCount = 8;
+            Vector3 basePosition = transform.localPosition;
+
+            while (elapsed < duration)
+            {
+                float t = elapsed / duration;
+                float angle = Mathf.Sin(t * trembleCount * Mathf.PI * 2) * trembleMagnitude;
+                transform.localPosition = basePosition + new Vector3(angle, 0, 0);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            transform.localPosition = basePosition;
         }
     }
 }

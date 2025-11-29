@@ -191,7 +191,7 @@ public class GameManager : MonoBehaviour
         turnCountThisFight++;
         foreach (Slot slot in slots)
         {
-            Debug.Log("Executed Slot: " + slot.GetType().Name);
+            Debug.Log("Executed Slot: " + slot.action.GetType().Name);
             slot.ExecuteEndTurn(playerEntity, enemyEntity);
 
             if (!inFight)

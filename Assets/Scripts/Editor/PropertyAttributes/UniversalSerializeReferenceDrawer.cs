@@ -30,7 +30,7 @@ public class UniversalSerializeReferenceDrawer : PropertyDrawer
         string fullTypeName = property.managedReferenceFullTypename;
         string displayName = GetNameWithSpace(GetShortTypeName(fullTypeName)) ?? $"Select {GetNameWithSpace(declaredType.ToString())}";
 
-        // Menu déroulant du type
+        // Menu deroulant du type
         if (EditorGUI.DropdownButton(typeRect, new GUIContent(displayName), FocusType.Keyboard))
         {
             GenericMenu menu = new GenericMenu();
@@ -69,7 +69,7 @@ public class UniversalSerializeReferenceDrawer : PropertyDrawer
                 float h = EditorGUI.GetPropertyHeight(iterator, true);
                 Rect r = new Rect(contentRect.x, yOffset, contentRect.width, h);
                 EditorGUI.PropertyField(r, iterator, true);
-                yOffset += h + 2; // pas d'espace supplémentaire
+                yOffset += h + 2; // pas d'espace supplementaire
                 iterator.NextVisible(false);
             }
 
@@ -144,7 +144,7 @@ public class UniversalSerializeReferenceDrawer : PropertyDrawer
     {
         if (string.IsNullOrEmpty(_fullName))
             return _fullName;
-        // Utilisation de Regex : insère un espace avant une majuscule qui suit une lettre minuscule ou un chiffre
+        // Utilisation de Regex : insere un espace avant une majuscule qui suit une lettre minuscule ou un chiffre
         return Regex.Replace(_fullName, "(?<!^)([A-Z])", " $1");
     }
 }
