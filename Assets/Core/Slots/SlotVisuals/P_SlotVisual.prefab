@@ -121,7 +121,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5269565152766689747}
   - {fileID: 4787637456252239835}
@@ -863,7 +863,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 349704204115782716}
   - {fileID: 6740710316168138273}
@@ -880,6 +880,7 @@ GameObject:
   - component: {fileID: 6806247001336715809}
   - component: {fileID: 8491673549846770494}
   - component: {fileID: -4698061424934278819}
+  - component: {fileID: 3902963149372421731}
   m_Layer: 0
   m_Name: P_SlotVisual
   m_TagString: Untagged
@@ -979,6 +980,36 @@ MonoBehaviour:
   neutralTransform: {fileID: 7912814435166386843}
   activatedTransform: {fileID: 3984966268022400484}
   deactivatedTransform: {fileID: 3532644624870412498}
+  dragSound: {fileID: 8300000, guid: eed52a02408695b4a900475be72292e1, type: 3}
+  dropSound: {fileID: 8300000, guid: eed52a02408695b4a900475be72292e1, type: 3}
+  slot:
+    state: 0
+    activationsThisTurn: 0
+    activationsThisFight: 0
+    size: 0
+    placementIndex: -1
+    slotData: {fileID: 0}
+--- !u!65 &3902963149372421731
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5285519878955923373}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5472826907217880977
 GameObject:
   m_ObjectHideFlags: 0
@@ -1006,7 +1037,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3137492282704107448}
   - {fileID: 4925432423437554429}

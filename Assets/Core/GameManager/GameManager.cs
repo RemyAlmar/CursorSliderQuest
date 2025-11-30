@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private Transform interfaceUI;
     [SerializeField] private IEntity enemyEntity;
     [SerializeField] private IEntity playerEntity;
     [SerializeField] private Player playerPrefab;
@@ -25,10 +27,15 @@ public class GameManager : MonoBehaviour
     private float lastClickTime = 0f;
     private bool lastPressedOnUI = false;
 
+
+    // Fight Management
     public int turnCountThisFight = 0;
     public float startTurnDelay = 0.5f;
-
     public bool inFight = false;
+
+    // Out Fight Management
+    public SlotVisual selectedSlotVisual;
+    public Vector3 currentClickOffset;
 
     void Awake()
     {
@@ -38,9 +45,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
-        SpawnPlayer();
-        SpawnEnemy();
-        inFight = true;
+        interfaceUI.gameObject.SetActive(true);
     }
 
     void Update()
@@ -108,17 +113,27 @@ public class GameManager : MonoBehaviour
                         lastClickable = currentClickable;
                         currentClickable = null;
                     }
+
+                    if (selectedSlotVisual != null && selectedSlotVisual.TryGetComponent(out IClickable slotClickable) && slotClickable != currentClickable)
+                    {
+                        selectedSlotVisual.OnCursorUp();
+                        selectedSlotVisual = null;
+                    }
                 }
 
                 lastPressedOnUI = false;
             }
         }
 
-        if (inFight)
+        // Update Player
+        if (playerEntity is Player player)
         {
-            // Upate player
-            playerEntity.Turn(enemyEntity);
+            if (inFight)
+                playerEntity.Turn(enemyEntity);
+            else
+                player.OutFightUpdate();
         }
+
     }
 
     #region Raycast Input Helpers
@@ -155,6 +170,20 @@ public class GameManager : MonoBehaviour
         slots.Add(_slot);
     }
 
+    public void GenerateFight()
+    {
+        Debug.Log("Generating Fight...");
+        if (playerEntity == null)
+        {
+            SpawnPlayer();
+        }
+
+        inFight = true;
+        turnCountThisFight = 0;
+        SpawnEnemy();
+        playerEntity.StartTurn();
+    }
+
     public void StopFight()
     {
         Debug.Log("Fight Stopped.");
@@ -164,6 +193,11 @@ public class GameManager : MonoBehaviour
             slot.ResetFight(playerEntity, enemyEntity);
         }
         slots.Clear();
+
+        if (playerEntity != null && playerEntity.Health.IsDie)
+        {
+            Debug.Log("Player has been defeated. Restarting the game...");
+        }
     }
 
     public void EnemyDefeated(IEntity _enemy)
@@ -175,8 +209,10 @@ public class GameManager : MonoBehaviour
         if (playerEntity is Player player)
         {
             Debug.Log("Fight Ended. Resetting Player.");
-            player.OutFightReset();
+            player.OutFight();
         }
+
+        LaunchInterface();
     }
 
     public void EndTurn()
@@ -216,5 +252,20 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(startTurnDelay);
         playerEntity.StartTurn();
+    }
+
+    private void LaunchInterface()
+    {
+        interfaceUI.gameObject.SetActive(true);
+    }
+
+    // Out Fight Slot Selection
+    internal void SelectSlot(SlotVisual slotVisual)
+    {
+        selectedSlotVisual = slotVisual;
+        if (slotVisual != null)
+        {
+            currentClickOffset = Camera.main.ScreenToWorldPoint(Input.mousePosition) - slotVisual.transform.position;
+        }
     }
 }
