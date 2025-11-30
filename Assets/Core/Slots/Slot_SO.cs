@@ -10,6 +10,7 @@ public class Slot_SO : ScriptableObject
     public bool canBeDeactivated = true;
     public int activationPerTurn = 1;
     [SerializeReference] public SlotAction actionActivate;
+    [SerializeReference] public SlotAction actionReset;
     [SerializeReference] public SlotVisual slotVisualPrefab;
 
 #if UNITY_EDITOR
