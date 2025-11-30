@@ -22,7 +22,7 @@ public class SlotAction_Slash : SlotAction
     }
     public override void ResetFight(IEntity executor, IEntity target, int indexSlot = -1)
     {
-
+        powerMult = 1f;
     }
 
     public override void MultiplyValue(float _multiplier) // JE SAIS ON VA PAS FAIRE CA MAIS C'ETAIT POUR TEST

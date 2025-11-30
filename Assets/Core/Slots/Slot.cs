@@ -74,6 +74,11 @@ public class Slot
     public void ResetFight(IEntity _owner, IEntity _target)
     {
         action?.ResetFight(_owner, _target, placementIndex);
+        
+        ActionState previousState = state;
+        state = ActionState.Neutral;
+
+        UpdateVisual(previousState, state);
 
         activationsThisTurn = 0;
         activationsThisFight = 0;

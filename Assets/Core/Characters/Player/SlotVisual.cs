@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlotVisual : MonoBehaviour
+public class SlotVisual : MonoBehaviour, IClickable
 {
     [SerializeField] private List<SpriteRenderer> spriteRenderers;
     Coroutine feeedbackCoroutine;
@@ -14,8 +13,16 @@ public class SlotVisual : MonoBehaviour
     [SerializeField] private Transform activatedTransform;
     [SerializeField] private Transform deactivatedTransform;
 
-    public void Initialize()
+    [Header("Sounds")]
+    [SerializeField] private AudioClip dragSound;
+    [SerializeField] private AudioClip dropSound;
+
+    // Slot
+    public Slot slot;
+
+    public void Initialize(Slot slot)
     {
+        this.slot = slot;
         originalScale = transform.localScale;
         originalPosition = transform.localPosition;
         InitializeVisual();
@@ -103,7 +110,7 @@ public class SlotVisual : MonoBehaviour
         }
     }
 
-    internal void NegativeFeedback()
+    public void NegativeFeedback()
     {
         if (feeedbackCoroutine != null)
         {
@@ -132,4 +139,68 @@ public class SlotVisual : MonoBehaviour
             transform.localPosition = basePosition;
         }
     }
+
+    public void OnCursorDown()
+    {
+        if (!GameManager.Instance.inFight)
+        {
+            Debug.Log("SlotVisual Cursor Down while out of fight: " + gameObject.name);
+
+            if (slot != null)
+            {
+                // Check où le joueur a cliqué pour connaitre sur quelle partie de la slot il a cliqué
+                Vector3 worldClickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector3 localClickPosition = transform.InverseTransformPoint(worldClickPosition);
+                float halfWidth = (float)slot.size / 2;
+                for (int i = 0; i < slot.size; i++)
+                {
+                    float segmentStart = -halfWidth + i;
+                    float segmentEnd = segmentStart + 1f;
+                    if (localClickPosition.x >= segmentStart && localClickPosition.x < segmentEnd)
+                    {
+                        Debug.Log("Clicked on segment " + i + " of slot " + name);
+                        break;
+                    }
+                }
+            }
+
+            GameManager.Instance.SelectSlot(this);
+
+            // Play drag sound
+            if (dragSound != null)
+            {
+                var options = new SoundManager.SoundOptions { volume = 0.5f, pitch = 1.1f };
+                SoundManager.Instance.PlaySound(options, dragSound);
+            }
+        }
+    }
+
+    public void OnCursorUp()
+    {
+        if (!GameManager.Instance.inFight)
+        {
+            if (GameManager.Instance.selectedSlotVisual == this)
+            {
+                // Drop the slot
+                GameManager.Instance.SelectSlot(null);
+                // Snap back to original position
+                transform.localPosition = new Vector3(slot.placementIndex + slot.size / 2f - 0.5f, 0f, 0f);
+
+                // Play drag sound
+                if (dropSound != null)
+                {
+                    var options = new SoundManager.SoundOptions { volume = 0.5f, pitch = 0.9f };
+                    SoundManager.Instance.PlaySound(options, dropSound);
+                }
+            }
+        }
+    }
+
+    public void OnCursorEnter() { }
+
+    public void OnCursorExit() { }
+
+    public void OnClick() { }
+
+    public void OnClickOutside() { }
 }
