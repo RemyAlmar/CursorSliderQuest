@@ -5,6 +5,7 @@ public class Monster : MonoBehaviour, IEntity
 {
     public int maxHealth = 100;
     public Health Health => health;
+    public HealthBarVisual healthBarVisual;
     public int damage = 10;
 
     public int Damage { get => damage; }
@@ -29,6 +30,7 @@ public class Monster : MonoBehaviour, IEntity
         health = new(maxHealth);
         health.OnTakeDamage += TakeDamage;
         health.OnDie += Die;
+        health.OnCurrentHealthChanged += () => healthBarVisual.SetSize(health.HealthNormalized);
         damage = 10;
 
         // Initialize Animator
@@ -67,7 +69,7 @@ public class Monster : MonoBehaviour, IEntity
     public void TakeDamage(int amount)
     {
         isOccupied = true;
-        if (!health.IsDie)
+        if (!health.IsDead)
         {
             animator.SetTrigger(animHitHash);
             StartCoroutine(OccupiedRoutine(hitAnimTime));
