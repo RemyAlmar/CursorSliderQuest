@@ -5,10 +5,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IEntity
 {
-    public int health = 100;
-    public int damage = 15;
-    public int Health { get => health; }
-    public int Damage { get => damage; }
+    public int maxHealth;
+    private Health health;
+    public Health Health { get => health; }
     public Slot_SO slotDefault;
 
 
@@ -24,26 +23,15 @@ public class Player : MonoBehaviour, IEntity
     public float turnTimeSecond = 4f;
     public bool isMyTurn { get; set; } = false;
     public bool isOccupied { get; set; } = false;
+
     public void Initialize()
     {
-        health = 100;
-        damage = 15;
+        health = new(maxHealth);
         doActionButton.player = this;
         isMyTurn = true;
-
+        health.OnDie += GameManager.Instance.StopFight;
         InitializeSlots(slotsSO);
-        FillOutRestArray(); // TO SUPP AVEC LA FONCTION
-
-        //slots = new List<Slot>()      // J'AI COMMENTE CA POUR TEST LES LIGNES JUSTE AU DESSUS
-        //{
-        //    new Slot(),
-        //    new Slot(),
-        //    new Slot(),
-        //    new Slot(new Action_Slash()),
-        //    new Slot(),
-        //    new Slot(),
-        //    new Slot(),
-        //};
+        FillOutRestArray();
 
         InitializeSliderVisual();
     }
@@ -96,21 +84,10 @@ public class Player : MonoBehaviour, IEntity
         if (cursorSliderVisual != null)
             cursorSliderVisual.Initialize(slots);
     }
-
-    public void TakeDamage(int _damage)
-    {
-        health -= _damage;
-        if (health <= 0)
-        {
-            Debug.Log("Player Defeated!");
-            GameManager.Instance.StopFight();
-        }
-    }
-
     public void OutFightReset()
     {
         Debug.Log("Resetting Player State.");
-        health = 100;
+        health.Reset();
         cursorSliderVisual.ResetVisual();
     }
 

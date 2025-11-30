@@ -46,15 +46,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b216a5c0e78fb504397219f48c44fd2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  health: 100
-  damage: 15
+  maxHealth: 100
   slotDefault: {fileID: 11400000, guid: c5f891f7fb0f23d439e37f3d3bb068b5, type: 2}
   doActionButton: {fileID: 3319137891527096846}
   currentCursor: 0
   direction: 1
   slots: []
   slotsSO:
-  - {fileID: 11400000, guid: c5f891f7fb0f23d439e37f3d3bb068b5, type: 2}
   - {fileID: 11400000, guid: 4adfa9ad785c5464ca9b7c2f9eec0881, type: 2}
   - {fileID: 11400000, guid: 105a7346bb1e6fb4993e6d1b996e53be, type: 2}
   - {fileID: 11400000, guid: c5f891f7fb0f23d439e37f3d3bb068b5, type: 2}
