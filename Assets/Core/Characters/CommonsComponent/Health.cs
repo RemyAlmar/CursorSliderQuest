@@ -4,8 +4,8 @@ using UnityEngine;
 public class Health
 {
     private int maxHealth;
-    private int currentHealth;
-    public bool IsDie => currentHealth <= 0;
+    public int currentHealth;
+    public bool IsDead => currentHealth <= 0;
 
     public Action<int> OnTakeDamage;
     public Action OnDie;
@@ -13,8 +13,9 @@ public class Health
     public Action<int> OnHeal;
     public Action OnHealthComplete;
 
+    public Action OnCurrentHealthChanged;
     public Action OnMaxHealthChanged;
-
+    public float HealthNormalized => Mathf.Clamp01((float)currentHealth / maxHealth);
     public void SetMaxHealth(Func<int> _newValue)
     {
         int _previousValue = maxHealth;
@@ -31,14 +32,15 @@ public class Health
     public void Reset()
     {
         currentHealth = maxHealth;
+        OnCurrentHealthChanged();
     }
 
     public void TakeDamage(int _damage)
     {
         currentHealth -= _damage;
         currentHealth = Mathf.Max(currentHealth, 0);
-
         OnTakeDamage?.Invoke(_damage);
+        OnCurrentHealthChanged?.Invoke();
         if (currentHealth <= 0) OnDie?.Invoke();
     }
 
@@ -49,6 +51,7 @@ public class Health
         currentHealth = Mathf.Min(currentHealth, maxHealth);
 
         OnHeal?.Invoke(_healValue);
+        OnCurrentHealthChanged?.Invoke();
         if (currentHealth >= maxHealth) OnHealthComplete?.Invoke();
     }
 }
