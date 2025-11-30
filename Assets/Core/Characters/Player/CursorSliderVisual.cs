@@ -32,7 +32,7 @@ public class CursorSliderVisual : MonoBehaviour
                 slot.visual = slotVisual;
                 slotVisual.transform.localPosition = new Vector3(targetIndex + slot.slotData.size / 2f - 0.5f, 0f, 0f);
 
-                slotVisual.Initialize();
+                slotVisual.Initialize(slot);
                 slotVisuals.Add(slotVisual);
             }
             else

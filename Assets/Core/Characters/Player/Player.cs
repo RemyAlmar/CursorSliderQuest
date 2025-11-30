@@ -13,10 +13,10 @@ public class Player : MonoBehaviour, IEntity
 
     public DoActionButton doActionButton;
 
-    [Range(0f, 7f)] public float currentCursor = 0f;
+    [Range(0f, 5f)] public float currentCursor = 0f;
     public int direction = 1;
     float cursorSliderMin = 0f;
-    float cursorSliderMax = 7f;
+    float cursorSliderMax = 5f;
     public List<Slot> slots = new();
     public List<Slot_SO> slotsSO = new();
     public CursorSliderVisual cursorSliderVisual;
@@ -87,12 +87,6 @@ public class Player : MonoBehaviour, IEntity
         if (cursorSliderVisual != null)
             cursorSliderVisual.Initialize(slots);
     }
-    public void OutFightReset()
-    {
-        Debug.Log("Resetting Player State.");
-        health.Reset();
-        cursorSliderVisual.ResetVisual();
-    }
 
     // Player Update
     public void Turn(IEntity _entity)
@@ -154,8 +148,33 @@ public class Player : MonoBehaviour, IEntity
     }
 
     // OUT FIGHT
+    public void OutFight()
+    {
+        Debug.Log("Resetting Player State.");
+        health.Reset();
+        cursorSliderVisual.ResetVisual();
+
+        outFightSlots.Clear();
+        // Copy current slots to outFightSlots
+        foreach (Slot slot in slots)
+        {
+            Slot_SO slotDataCopy = Instantiate(slot.slotData);
+            Slot slotCopy = new Slot(slotDataCopy, slot.placementIndex);
+            outFightSlots.Add(slotCopy);
+        }
+    }
     public void OutFightUpdate()
     {
-        // Nothing for now
+        // Update slots based on selected slot and click offset
+        SlotVisual selectedSlotVisual = GameManager.Instance.selectedSlotVisual;
+        if (selectedSlotVisual != null)
+        {
+            Vector3 clickOffset = GameManager.Instance.currentClickOffset;
+            // Mouse Input in World Space
+            Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            
+            // Drag and Drop Logic
+            selectedSlotVisual.transform.position = new Vector3(worldMousePosition.x - clickOffset.x, worldMousePosition.y - clickOffset.y, 0);
+        }
     }
 }

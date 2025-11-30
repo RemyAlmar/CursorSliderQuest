@@ -27,10 +27,15 @@ public class GameManager : MonoBehaviour
     private float lastClickTime = 0f;
     private bool lastPressedOnUI = false;
 
+
+    // Fight Management
     public int turnCountThisFight = 0;
     public float startTurnDelay = 0.5f;
-
     public bool inFight = false;
+
+    // Out Fight Management
+    public SlotVisual selectedSlotVisual;
+    public Vector3 currentClickOffset;
 
     void Awake()
     {
@@ -108,6 +113,12 @@ public class GameManager : MonoBehaviour
                         lastClickable = currentClickable;
                         currentClickable = null;
                     }
+
+                    if (selectedSlotVisual != null && selectedSlotVisual.TryGetComponent(out IClickable slotClickable) && slotClickable != currentClickable)
+                    {
+                        selectedSlotVisual.OnCursorUp();
+                        selectedSlotVisual = null;
+                    }
                 }
 
                 lastPressedOnUI = false;
@@ -183,10 +194,9 @@ public class GameManager : MonoBehaviour
         }
         slots.Clear();
 
-        if (playerEntity != null && playerEntity.Health <= 0)
+        if (playerEntity != null && playerEntity.Health.IsDie)
         {
             Debug.Log("Player has been defeated. Restarting the game...");
-
         }
     }
 
@@ -199,7 +209,7 @@ public class GameManager : MonoBehaviour
         if (playerEntity is Player player)
         {
             Debug.Log("Fight Ended. Resetting Player.");
-            player.OutFightReset();
+            player.OutFight();
         }
 
         LaunchInterface();
@@ -247,5 +257,15 @@ public class GameManager : MonoBehaviour
     private void LaunchInterface()
     {
         interfaceUI.gameObject.SetActive(true);
+    }
+
+    // Out Fight Slot Selection
+    internal void SelectSlot(SlotVisual slotVisual)
+    {
+        selectedSlotVisual = slotVisual;
+        if (slotVisual != null)
+        {
+            currentClickOffset = Camera.main.ScreenToWorldPoint(Input.mousePosition) - slotVisual.transform.position;
+        }
     }
 }
