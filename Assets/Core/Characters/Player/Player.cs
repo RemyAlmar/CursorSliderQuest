@@ -8,6 +8,7 @@ public class Player : MonoBehaviour, IEntity
     public int maxHealth;
     private Health health;
     public Health Health { get => health; }
+    public HealthBarVisual healthBarVisual;
     public Slot_SO slotDefault;
 
 
@@ -30,6 +31,7 @@ public class Player : MonoBehaviour, IEntity
         doActionButton.player = this;
         isMyTurn = true;
         health.OnDie += GameManager.Instance.StopFight;
+        health.OnCurrentHealthChanged += () => healthBarVisual.SetSize(health.HealthNormalized);
         InitializeSlots(slotsSO);
         FillOutRestArray();
 

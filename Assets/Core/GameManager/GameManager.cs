@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public List<Monster> enemyPrefabs;
 
     public static GameManager Instance { get; private set; }
-    public static bool CanDoAction => Instance.enemyEntity != null && Instance.playerEntity != null && !Instance.enemyEntity.Health.IsDie && !Instance.playerEntity.Health.IsDie;
+    public static bool CanDoAction => Instance.enemyEntity != null && Instance.playerEntity != null && !Instance.enemyEntity.Health.IsDead && !Instance.playerEntity.Health.IsDead;
 
     // Inputs
     private RaycastHit hitInfo;
