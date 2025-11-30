@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private Transform interfaceUI;
     [SerializeField] private IEntity enemyEntity;
     [SerializeField] private IEntity playerEntity;
     [SerializeField] private Player playerPrefab;
@@ -38,9 +40,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
-        SpawnPlayer();
-        SpawnEnemy();
-        inFight = true;
+        interfaceUI.gameObject.SetActive(true);
     }
 
     void Update()
@@ -114,11 +114,15 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (inFight)
+        // Update Player
+        if (playerEntity is Player player)
         {
-            // Upate player
-            playerEntity.Turn(enemyEntity);
+            if (inFight)
+                playerEntity.Turn(enemyEntity);
+            else
+                player.OutFightUpdate();
         }
+
     }
 
     #region Raycast Input Helpers
@@ -155,6 +159,20 @@ public class GameManager : MonoBehaviour
         slots.Add(_slot);
     }
 
+    public void GenerateFight()
+    {
+        Debug.Log("Generating Fight...");
+        if (playerEntity == null)
+        {
+            SpawnPlayer();
+        }
+
+        inFight = true;
+        turnCountThisFight = 0;
+        SpawnEnemy();
+        playerEntity.StartTurn();
+    }
+
     public void StopFight()
     {
         Debug.Log("Fight Stopped.");
@@ -164,6 +182,12 @@ public class GameManager : MonoBehaviour
             slot.ResetFight(playerEntity, enemyEntity);
         }
         slots.Clear();
+
+        if (playerEntity != null && playerEntity.Health <= 0)
+        {
+            Debug.Log("Player has been defeated. Restarting the game...");
+
+        }
     }
 
     public void EnemyDefeated(IEntity _enemy)
@@ -177,6 +201,8 @@ public class GameManager : MonoBehaviour
             Debug.Log("Fight Ended. Resetting Player.");
             player.OutFightReset();
         }
+
+        LaunchInterface();
     }
 
     public void EndTurn()
@@ -216,5 +242,10 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(startTurnDelay);
         playerEntity.StartTurn();
+    }
+
+    private void LaunchInterface()
+    {
+        interfaceUI.gameObject.SetActive(true);
     }
 }

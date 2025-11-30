@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlotVisual : MonoBehaviour
+public class SlotVisual : MonoBehaviour, IClickable
 {
     [SerializeField] private List<SpriteRenderer> spriteRenderers;
     Coroutine feeedbackCoroutine;
@@ -132,4 +132,22 @@ public class SlotVisual : MonoBehaviour
             transform.localPosition = basePosition;
         }
     }
+
+    public void OnCursorDown()
+    {
+        if (!GameManager.Instance.inFight)
+        {
+            Debug.Log("SlotVisual Cursor Down while out of fight: " + gameObject.name);
+        }
+    }
+
+    public void OnCursorUp() { }
+
+    public void OnCursorEnter() { }
+
+    public void OnCursorExit() { }
+
+    public void OnClick() { }
+
+    public void OnClickOutside() { }
 }

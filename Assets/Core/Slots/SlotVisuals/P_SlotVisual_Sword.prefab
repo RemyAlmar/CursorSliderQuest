@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: spriteRenderers.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3902963149372421731, guid: 6f9b8a6ae6d839044909472785ae9fea, type: 3}
+      propertyPath: m_Size.x
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5285519878955923373, guid: 6f9b8a6ae6d839044909472785ae9fea, type: 3}
       propertyPath: m_Name
       value: P_SlotVisual_Sword

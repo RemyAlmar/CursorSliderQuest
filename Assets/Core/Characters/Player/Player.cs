@@ -24,6 +24,9 @@ public class Player : MonoBehaviour, IEntity
     public bool isMyTurn { get; set; } = false;
     public bool isOccupied { get; set; } = false;
 
+    // Out Fight
+    private List<Slot> outFightSlots = new();
+
     public void Initialize()
     {
         health = new(maxHealth);
@@ -35,7 +38,7 @@ public class Player : MonoBehaviour, IEntity
 
         InitializeSliderVisual();
     }
-    void FillOutRestArray()    //A SUPPRIMER, ICI JUSTE POUR TESTER ET PAS TOUT NIQUER
+    void FillOutRestArray()
     {
         if (slots.Count == cursorSliderMax) return;
         int _toAdd = (int)cursorSliderMax - slots.Count;
@@ -148,5 +151,11 @@ public class Player : MonoBehaviour, IEntity
         isMyTurn = false;
         cursorSliderVisual.EndTurn();
         GameManager.Instance.EndTurn();
+    }
+
+    // OUT FIGHT
+    public void OutFightUpdate()
+    {
+        // Nothing for now
     }
 }
