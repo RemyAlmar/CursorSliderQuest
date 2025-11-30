@@ -10,23 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afa0303d05a307b4db0028207d43da2e, type: 3}
-  m_Name: SlotData_Empty_size1
+  m_Name: SlotData_Void_size1
   m_EditorClassIdentifier: Assembly-CSharp::Slot_SO
-  idName: Empty
-  id: -1459219776
+  idName: Void
+  id: 1917417168
   size: 1
   canBeDeactivated: 1
+  activationPerTurn: 1
   actionActivate:
-    rid: 7085022676841922625
-  actionReset:
-    rid: 7085022676841922626
+    rid: 7085022721874067524
   slotVisualPrefab: {fileID: 5526622897318018853, guid: 705296ee5b1464240be7f29c494fe0ee, type: 3}
   references:
     version: 2
     RefIds:
-    - rid: 7085022676841922625
-      type: {class: Action_Void, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 7085022676841922626
-      type: {class: Action_Void, ns: , asm: Assembly-CSharp}
+    - rid: 7085022721874067524
+      type: {class: SlotAction_Void, ns: , asm: Assembly-CSharp}
       data: 

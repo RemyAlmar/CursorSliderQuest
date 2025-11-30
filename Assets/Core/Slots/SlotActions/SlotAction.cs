@@ -1,7 +1,7 @@
 using System;
 
 [Serializable]
-public abstract class Action
+public abstract class SlotAction
 {
     public abstract void ExecuteInTurn(IEntity executor, IEntity target, int indexSlot = -1);
     public abstract void ExecuteEndTurn(IEntity executor, IEntity target, int indexSlot = -1);

@@ -1,7 +1,7 @@
 using System;
 
 [Serializable]
-public class Action_Slash : Action
+public class SlotAction_Slash : SlotAction
 {
     public int damage;
     public float powerMult = 1f;

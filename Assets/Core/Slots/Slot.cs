@@ -7,7 +7,7 @@ public class Slot
     public int activationsThisTurn;
     public int activationsThisFight;
 
-    public Action action = null;
+    public SlotAction action = null;
     public int size = 0;
     public int placementIndex = -1;
     public Slot_SO slotData;
@@ -15,9 +15,9 @@ public class Slot
 
     public Slot()
     {
-        action = new Action_Void();
+        action = new SlotAction_Void();
     }
-    public Slot(Action action)
+    public Slot(SlotAction action)
     {
         this.action = action;
     }
