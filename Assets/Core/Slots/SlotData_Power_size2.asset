@@ -16,18 +16,14 @@ MonoBehaviour:
   id: 1783312036
   size: 2
   canBeDeactivated: 1
+  activationPerTurn: 1
   actionActivate:
-    rid: 7085022676841922631
-  actionReset:
-    rid: 7085022676841922628
+    rid: 7085022721874067523
   slotVisualPrefab: {fileID: 5526622897318018853, guid: 47371470f4fbf8242b4b0d53420056ed, type: 3}
   references:
     version: 2
     RefIds:
-    - rid: 7085022676841922628
-      type: {class: Action_Void, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 7085022676841922631
-      type: {class: Action_Power, ns: , asm: Assembly-CSharp}
+    - rid: 7085022721874067523
+      type: {class: SlotAction_Power, ns: , asm: Assembly-CSharp}
       data:
-        powerMult: 2
+        powerMult: 1

@@ -52,11 +52,12 @@ MonoBehaviour:
   doActionButton: {fileID: 3319137891527096846}
   currentCursor: 0
   direction: 1
+  slots: []
   slotsSO:
   - {fileID: 11400000, guid: c5f891f7fb0f23d439e37f3d3bb068b5, type: 2}
   - {fileID: 11400000, guid: 4adfa9ad785c5464ca9b7c2f9eec0881, type: 2}
-  - {fileID: 11400000, guid: c5f891f7fb0f23d439e37f3d3bb068b5, type: 2}
   - {fileID: 11400000, guid: 105a7346bb1e6fb4993e6d1b996e53be, type: 2}
+  - {fileID: 11400000, guid: c5f891f7fb0f23d439e37f3d3bb068b5, type: 2}
   cursorSliderVisual: {fileID: 6350193064248335411}
   turnTimeSecond: 1
 --- !u!1001 &71075981202781371
