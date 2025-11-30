@@ -19,12 +19,16 @@ MonoBehaviour:
   activationPerTurn: 1
   actionActivate:
     rid: 7085022721874067525
+  actionReset:
+    rid: -2
   slotVisualPrefab: {fileID: 5526622897318018853, guid: f722c672ce50926439b6211f3bf9c64a, type: 3}
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 7085022721874067525
       type: {class: SlotAction_Slash, ns: , asm: Assembly-CSharp}
       data:
-        damage: 0
+        damage: 15
         powerMult: 1

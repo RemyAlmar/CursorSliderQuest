@@ -1,14 +1,12 @@
 using System.Collections;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class Monster : MonoBehaviour, IEntity
 {
-    public int health = 100;
+    public int maxHealth = 100;
+    public Health Health => health;
     public int damage = 10;
 
-    public int Health { get => health; }
     public int Damage { get => damage; }
     public bool isMyTurn { get; set; } = false;
     public bool isOccupied { get; set; } = false;
@@ -18,6 +16,7 @@ public class Monster : MonoBehaviour, IEntity
     public AudioClip attackSound;
 
     private Animator animator;
+    private Health health;
     private int animAttackHash = Animator.StringToHash("Attack");
     private int animHitHash = Animator.StringToHash("Hit");
     [SerializeField] private float hitAnimTime = 0.2f;
@@ -27,7 +26,9 @@ public class Monster : MonoBehaviour, IEntity
     Coroutine dieRoutine;
     public void Initialize()
     {
-        health = 100;
+        health = new(maxHealth);
+        health.OnTakeDamage += TakeDamage;
+        health.OnDie += Die;
         damage = 10;
 
         // Initialize Animator
@@ -52,8 +53,8 @@ public class Monster : MonoBehaviour, IEntity
         animator.SetTrigger(animAttackHash);
 
         yield return new WaitForSeconds(1f);
-        
-        player.TakeDamage(damage);
+
+        player.Health.TakeDamage(damage);
         if (!GameManager.Instance.inFight)
         {
             isMyTurn = false;
@@ -66,12 +67,7 @@ public class Monster : MonoBehaviour, IEntity
     public void TakeDamage(int amount)
     {
         isOccupied = true;
-        health -= amount;
-        if (health <= 0)
-        {
-            Die();
-        }
-        else
+        if (!health.IsDie)
         {
             animator.SetTrigger(animHitHash);
             StartCoroutine(OccupiedRoutine(hitAnimTime));

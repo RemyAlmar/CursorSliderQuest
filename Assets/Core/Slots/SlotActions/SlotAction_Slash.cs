@@ -5,7 +5,7 @@ public class SlotAction_Slash : SlotAction
 {
     public int damage;
     public float powerMult = 1f;
-    
+
     public override void ExecuteInTurn(IEntity executor, IEntity target, int indexSlot = -1)
     {
 
@@ -13,7 +13,7 @@ public class SlotAction_Slash : SlotAction
     public override void ExecuteEndTurn(IEntity executor, IEntity target, int indexSlot = -1)
     {
         int targetDamage = (int)(damage * powerMult);
-        target.TakeDamage(targetDamage);
+        target.Health.TakeDamage(targetDamage);
     }
 
     public override void ResetTurn(IEntity executor, IEntity target, int indexSlot = -1)
