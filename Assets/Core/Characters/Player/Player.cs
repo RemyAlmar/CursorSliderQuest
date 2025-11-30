@@ -154,6 +154,8 @@ public class Player : MonoBehaviour, IEntity
     {
         Debug.Log("Resetting Player State.");
         health.Reset();
+        currentCursor = 0f;
+        direction = 1;
         cursorSliderVisual.ResetVisual();
 
         outFightSlots.Clear();

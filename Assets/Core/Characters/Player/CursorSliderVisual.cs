@@ -84,5 +84,6 @@ public class CursorSliderVisual : MonoBehaviour
     internal void ResetVisual()
     {
         endTurnVisualAnimator.SetTrigger(endTurnVisual_ResetAnimHash);
+        UpdateCursorPosition(0f);
     }
 }

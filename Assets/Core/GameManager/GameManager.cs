@@ -170,9 +170,24 @@ public class GameManager : MonoBehaviour
         slots.Add(_slot);
     }
 
+    public void StartGame()
+    {
+        if (playerEntity == null)
+        {
+            SpawnPlayer();
+        }
+    }
+
     public void GenerateFight()
     {
-        Debug.Log("Generating Fight...");
+        if (inFight)
+        {
+            Debug.Log("In Fight -> Out Fight to start a new Fight.");
+            StopFight();
+            if(enemyEntity != null)
+                EnemyDefeated(enemyEntity);
+        }
+        Debug.Log("Generating Fight");
         if (playerEntity == null)
         {
             SpawnPlayer();
@@ -182,6 +197,17 @@ public class GameManager : MonoBehaviour
         turnCountThisFight = 0;
         SpawnEnemy();
         playerEntity.StartTurn();
+    }
+
+    public void ExitFight()
+    {
+        if (inFight)
+        {
+            Debug.Log("In Fight -> Out Fight to start a new Fight.");
+            StopFight();
+            if(enemyEntity != null)
+                EnemyDefeated(enemyEntity);
+        }
     }
 
     public void StopFight()
@@ -196,8 +222,8 @@ public class GameManager : MonoBehaviour
 
         if (playerEntity != null && playerEntity.Health.IsDead)
         {
-            Debug.Log("Player has been defeated. Restarting the game...");
         }
+            Debug.Log("Player has been defeated. TODO: Restarting the game.");
     }
 
     public void EnemyDefeated(IEntity _enemy)
