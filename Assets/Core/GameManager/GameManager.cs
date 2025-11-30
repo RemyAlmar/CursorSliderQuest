@@ -194,7 +194,7 @@ public class GameManager : MonoBehaviour
         }
         slots.Clear();
 
-        if (playerEntity != null && playerEntity.Health.IsDie)
+        if (playerEntity != null && playerEntity.Health.IsDead)
         {
             Debug.Log("Player has been defeated. Restarting the game...");
         }
